@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==========================================
+// ENUMS (Domínios de Valores)
+// ==========================================
+enum Role {
+  USER
+  ADMIN
+}
+
+enum MonitorStatus {
+  ACTIVE
+  PAUSED
+}
+
+enum IncidentStatus {
+  OPEN
+  RESOLVED
+}
+
+// ==========================================
+// MODELS (Tabelas)
+// ==========================================
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  password_hash String
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  monitors      Monitor[]
+
+  @@map("users") // Nome da tabela no banco em minúsculo e plural (boa prática)
+}
+
+model Monitor {
+  id               String        @id @default(uuid())
+  userId           String
+  url              String
+  interval_minutes Int           @default(5)
+  status           MonitorStatus @default(ACTIVE)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  executions       CheckExecution[]
+  incidents        Incident[]
+  alerts           Alert[]
+
+  @@map("monitors")
+}
+
+model CheckExecution {
+  id               String   @id @default(uuid())
+  monitorId        String
+  status_code      Int?     // Opcional (Pode ser nulo em caso de timeout onde nem chega a ter HTTP Status)
+  response_time_ms Int
+  timestamp        DateTime @default(now())
+
+  monitor          Monitor  @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  // O ÍNDICE ESTRATÉGICO que definimos no Notion para salvar a performance!
+  @@index([monitorId, timestamp])
+  @@map("check_executions")
+}
+
+model Incident {
+  id          String         @id @default(uuid())
+  monitorId   String
+  status      IncidentStatus @default(OPEN)
+  startedAt   DateTime       @default(now())
+  resolvedAt  DateTime?      // Nulo enquanto o incidente estiver aberto
+
+  monitor     Monitor        @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  alerts      Alert[]
+
+  @@map("incidents")
+}
+
+model Alert {
+  id         String   @id @default(uuid())
+  monitorId  String
+  incidentId String?
+  type       String   @default("EMAIL")
+  message    String
+  sentAt     DateTime @default(now())
+
+  monitor    Monitor   @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  incident   Incident? @relation(fields: [incidentId], references: [id], onDelete: SetNull)
+
+  @@map("alerts")
+}

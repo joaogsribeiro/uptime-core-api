@@ -1,0 +1,36 @@
+# Dependências do Node
+node_modules/
+package-lock.json
+npm-debug.log
+yarn-error.log
+
+# Variáveis de Ambiente (Segurança)
+.env
+.env.*
+!.env.example
+
+# Build e Testes
+dist/
+build/
+coverage/
+.nyc_output/
+
+# Logs da Aplicação
+logs/
+*.log
+
+# Arquivos do Sistema Operacional e IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Prisma (Bancos locais, se por acaso usar SQLite depois para testes)
+*.db
+*.sqlite
+/src/generated/prisma
