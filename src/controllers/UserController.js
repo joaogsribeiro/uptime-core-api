@@ -47,6 +47,90 @@ class UserController {
       return res.status(500).json({ error: 'Erro interno do servidor.' });
     }
   }
+
+  // Listar todos os usuários (GET /api/users)
+  async index(req, res) {
+    try {
+      const users = await prisma.user.findMany({
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          createdAt: true
+        }
+      });
+      return res.status(200).json(users);
+    } catch (error) {
+      console.error('Erro ao listar usuários:', error);
+      return res.status(500).json({ error: 'Erro interno do servidor.' });
+    }
+  }
+
+  // Buscar um usuário específico (GET /api/users/:id)
+  async show(req, res) {
+    try {
+      const { id } = req.params;
+      const user = await prisma.user.findUnique({
+        where: { id },
+        select: { id: true, name: true, email: true, role: true, createdAt: true }
+      });
+
+      if (!user) {
+        return res.status(404).json({ error: 'Usuário não encontrado.' });
+      }
+
+      return res.status(200).json(user);
+    } catch (error) {
+      console.error('Erro ao buscar usuário:', error);
+      return res.status(500).json({ error: 'Erro interno do servidor.' });
+    }
+  }
+
+  // Atualizar usuário (PUT /api/users/:id)
+  async update(req, res) {
+    try {
+      const { id } = req.params;
+      const { name, email } = req.body;
+
+      // Verifica se o usuário existe antes de atualizar
+      const userExists = await prisma.user.findUnique({ where: { id } });
+      if (!userExists) {
+        return res.status(404).json({ error: 'Usuário não encontrado.' });
+      }
+
+      const user = await prisma.user.update({
+        where: { id },
+        data: { name, email },
+        select: { id: true, name: true, email: true, role: true, updatedAt: true }
+      });
+
+      return res.status(200).json(user);
+    } catch (error) {
+      console.error('Erro ao atualizar usuário:', error);
+      return res.status(500).json({ error: 'Erro interno do servidor.' });
+    }
+  }
+
+  // Deletar usuário (DELETE /api/users/:id)
+  async delete(req, res) {
+    try {
+      const { id } = req.params;
+
+      const userExists = await prisma.user.findUnique({ where: { id } });
+      if (!userExists) {
+        return res.status(404).json({ error: 'Usuário não encontrado.' });
+      }
+
+      await prisma.user.delete({ where: { id } });
+      
+      // 204 No Content é o padrão RESTful para deleções bem-sucedidas
+      return res.status(204).send(); 
+    } catch (error) {
+      console.error('Erro ao deletar usuário:', error);
+      return res.status(500).json({ error: 'Erro interno do servidor.' });
+    }
+  }
 }
 
 export default new UserController();
