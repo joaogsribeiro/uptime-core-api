@@ -1,20 +1,33 @@
 {
   "info": {
-    "_postman_id": "579cd75d-1b8d-4f2e-bc5d-1e27eda9e0c9",
-    "name": "User_CRUD",
+    "_postman_id": "e3a1ba0f-cbdc-4f95-9a5a-187a95d0079a",
+    "name": "Monitor_CRUD",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "49741034",
-    "_collection_link": "https://go.postman.co/collection/49741034-579cd75d-1b8d-4f2e-bc5d-1e27eda9e0c9?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/49741034-e3a1ba0f-cbdc-4f95-9a5a-187a95d0079a?source=collection_link"
   },
   "item": [
     {
-      "name": "Criar Usuário",
+      "name": "Criar Monitor",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"name\": \"João Guilherme\",\r\n    \"email\": \"joao.guilherme@example.com\",\r\n    \"password\": \"senha_segura_123\"\r\n}",
+          "raw": "{\n\t\"userId\": \"f52d86a0-0369-4be7-bcbd-e1141092bb99\",\n    \"url\": \"http://minha-api/teste\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -22,7 +35,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:3000/api/users",
+          "raw": "http://localhost:3000/api/monitors",
           "protocol": "http",
           "host": [
             "localhost"
@@ -30,19 +43,43 @@
           "port": "3000",
           "path": [
             "api",
-            "users"
+            "monitors"
           ]
         }
       },
       "response": []
     },
     {
-      "name": "Listar Usuários",
+      "name": "Listar Monitores",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:3000/api/users",
+          "raw": "http://localhost:3000/api/monitors",
           "protocol": "http",
           "host": [
             "localhost"
@@ -50,7 +87,7 @@
           "port": "3000",
           "path": [
             "api",
-            "users"
+            "monitors"
           ]
         }
       },
@@ -58,11 +95,28 @@
     },
     {
       "name": "Buscar por ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
       "request": {
         "method": "GET",
         "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"userId\": \"59d5f843-f558-4298-8324-1112bd8281ed\",\n    \"url\": \"http://minha-api/teste\"\n}"
+        },
         "url": {
-          "raw": "http://localhost:3000/api/users/:id",
+          "raw": "http://localhost:3000/api/monitors/:id",
           "protocol": "http",
           "host": [
             "localhost"
@@ -70,13 +124,13 @@
           "port": "3000",
           "path": [
             "api",
-            "users",
+            "monitors",
             ":id"
           ],
           "variable": [
             {
               "key": "id",
-              "value": "f52d86a0-0369-4be7-bcbd-e1141092bb99"
+              "value": "358b79d3-e66e-4d08-9632-dfe3f8688446"
             }
           ]
         }
@@ -84,13 +138,26 @@
       "response": []
     },
     {
-      "name": "Atualizar Usuário",
+      "name": "Atualizar Monitor",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
       "request": {
         "method": "PUT",
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"name\": \"João Guilherme Ribeiro\",\r\n  \"email\": \"joao.guilherme@example.com\",\r\n  \"password\": \"senha_segura_123\"\r\n}",
+          "raw": "{\n    \"status\": \"PAUSED\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -98,7 +165,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:3000/api/users/:id",
+          "raw": "http://localhost:3000/api/monitors/:id",
           "protocol": "http",
           "host": [
             "localhost"
@@ -106,13 +173,13 @@
           "port": "3000",
           "path": [
             "api",
-            "users",
+            "monitors",
             ":id"
           ],
           "variable": [
             {
               "key": "id",
-              "value": "f52d86a0-0369-4be7-bcbd-e1141092bb99"
+              "value": "358b79d3-e66e-4d08-9632-dfe3f8688446"
             }
           ]
         }
@@ -120,7 +187,20 @@
       "response": []
     },
     {
-      "name": "Deletar Usuário",
+      "name": "Deletar Monitor",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
       "request": {
         "method": "DELETE",
         "header": [],
@@ -134,20 +214,20 @@
           }
         },
         "url": {
-          "raw": "http://localhost:3000/users/:id",
+          "raw": "http://localhost:3000/monitors/:id",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "3000",
           "path": [
-            "users",
+            "monitors",
             ":id"
           ],
           "variable": [
             {
               "key": "id",
-              "value": "f52d86a0-0369-4be7-bcbd-e1141092bb99"
+              "value": "358b79d3-e66e-4d08-9632-dfe3f8688446"
             }
           ]
         }
@@ -160,7 +240,6 @@
       "listen": "prerequest",
       "script": {
         "type": "text/javascript",
-        "packages": {},
         "requests": {},
         "exec": [
           ""
@@ -171,7 +250,6 @@
       "listen": "test",
       "script": {
         "type": "text/javascript",
-        "packages": {},
         "requests": {},
         "exec": [
           ""
