@@ -6,12 +6,10 @@ class UserController {
     try {
       const { name, email, password } = req.body;
 
-      // 1. Validação básica
       if (!name || !email || !password) {
         return res.status(400).json({ error: 'Nome, e-mail e senha são obrigatórios.' });
       }
 
-      // 2. Verificar se o usuário já existe
       const userExists = await prisma.user.findUnique({
         where: { email }
       });
@@ -20,11 +18,9 @@ class UserController {
         return res.status(400).json({ error: 'Este e-mail já está em uso.' });
       }
 
-      // 3. Criptografar a senha (Hash)
       const salt = await bcrypt.genSalt(10);
       const password_hash = await bcrypt.hash(password, salt);
 
-      // 4. Criar o usuário no banco (omitindo a senha na resposta)
       const user = await prisma.user.create({
         data: {
           name,
@@ -37,7 +33,6 @@ class UserController {
           email: true,
           role: true,
           createdAt: true
-          // password_hash NÃO é retornado por segurança
         }
       });
 
@@ -48,9 +43,12 @@ class UserController {
     }
   }
 
-  // Listar todos os usuários (GET /api/users)
   async index(req, res) {
     try {
+      if (req.userRole !== 'ADMIN') {
+        return res.status(403).json({ error: 'Acesso negado. Apenas administradores podem listar usuários.' });
+      }
+
       const users = await prisma.user.findMany({
         select: {
           id: true,
@@ -67,10 +65,14 @@ class UserController {
     }
   }
 
-  // Buscar um usuário específico (GET /api/users/:id)
   async show(req, res) {
     try {
       const { id } = req.params;
+
+      if (req.userRole !== 'ADMIN' && req.userId !== id) {
+        return res.status(403).json({ error: 'Você não tem permissão para ver este perfil.' });
+      }
+
       const user = await prisma.user.findUnique({
         where: { id },
         select: { id: true, name: true, email: true, role: true, createdAt: true }
@@ -87,16 +89,18 @@ class UserController {
     }
   }
 
-  // Atualizar usuário (PUT /api/users/:id)
   async update(req, res) {
     try {
       const { id } = req.params;
       const { name, email } = req.body;
 
-      // Verifica se o usuário existe antes de atualizar
       const userExists = await prisma.user.findUnique({ where: { id } });
       if (!userExists) {
         return res.status(404).json({ error: 'Usuário não encontrado.' });
+      }
+
+      if (req.userRole !== 'ADMIN' && req.userId !== id) {
+        return res.status(403).json({ error: 'Você não tem permissão para editar este perfil.' });
       }
 
       const user = await prisma.user.update({
@@ -112,7 +116,6 @@ class UserController {
     }
   }
 
-  // Deletar usuário (DELETE /api/users/:id)
   async delete(req, res) {
     try {
       const { id } = req.params;
@@ -122,9 +125,12 @@ class UserController {
         return res.status(404).json({ error: 'Usuário não encontrado.' });
       }
 
+      if (req.userRole !== 'ADMIN' && req.userId !== id) {
+        return res.status(403).json({ error: 'Você não tem permissão para deletar este perfil.' });
+      }
+
       await prisma.user.delete({ where: { id } });
       
-      // 204 No Content é o padrão RESTful para deleções bem-sucedidas
       return res.status(204).send(); 
     } catch (error) {
       console.error('Erro ao deletar usuário:', error);

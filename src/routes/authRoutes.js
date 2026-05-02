@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import SessionController from '../controllers/SessionController.js';
+import UserController from '../controllers/UserController.js'; // Importamos o controller aqui
 
 const routes = new Router();
 
-// Rota pública para login (POST /api/auth/login)
+// Rotas Públicas
+routes.post('/register', UserController.create);
 routes.post('/login', SessionController.create);
-
-// TODO: Implementar rota de recuperação de senha futuramente
-// routes.post('/recover-password', PasswordController.store);
 
 export default routes;
