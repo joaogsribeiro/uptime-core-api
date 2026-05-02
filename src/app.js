@@ -1,6 +1,8 @@
 import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
+import adminRoutes from './routes/adminRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 import monitorRoutes from './routes/monitorRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
@@ -18,7 +20,14 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Rotas de Autenticação (Públicas)
+app.use('/api/auth', authRoutes);
+
+// Rotas de Domínio (Protegidas por JWT internamente nos arquivos de rota)
 app.use('/api/users', userRoutes);
 app.use('/api/monitors', monitorRoutes);
+
+// Rotas Administrativas (Protegidas por JWT + Admin Middleware)
+app.use('/api/admin', adminRoutes);
 
 export default app;

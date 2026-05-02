@@ -3,21 +3,17 @@ import prisma from '../config/database.js';
 class MonitorController {
   async create(req, res) {
     try {
-      const { userId, url, interval_minutes } = req.body;
+      const { url, interval_minutes } = req.body;
+      const userId = req.userId;
 
       if (!userId || !url) {
-        return res.status(400).json({ error: 'Os campos userId e url são obrigatórios.' });
+        return res.status(400).json({ error: 'A URL é obrigatória.' });
       }
 
       try {
         new URL(url);
       } catch (err) {
         return res.status(400).json({ error: 'Formato de URL inválido.' });
-      }
-
-      const userExists = await prisma.user.findUnique({ where: { id: userId } });
-      if (!userExists) {
-        return res.status(404).json({ error: 'Usuário não encontrado para vinculação.' });
       }
 
       const monitor = await prisma.monitor.create({
@@ -38,11 +34,7 @@ class MonitorController {
   async index(req, res) {
     try {
       const monitors = await prisma.monitor.findMany({
-        include: {
-          user: {
-            select: { name: true, email: true } // Evita trazer o hash da senha
-          }
-        }
+        where: { userId: req.userId }
       });
       return res.status(200).json(monitors);
     } catch (error) {
