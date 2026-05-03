@@ -47,7 +47,7 @@ class MonitorController {
   async show(req, res) {
     try {
       const { id } = req.params;
-      
+
       const monitor = await prisma.monitor.findUnique({
         where: { id },
         include: {
