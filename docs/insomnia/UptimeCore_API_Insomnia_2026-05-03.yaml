@@ -1,0 +1,438 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: UptimeCore API
+meta:
+  id: wrk_e0e5991af8354f2f9b63228e016b5f3b
+  created: 1777750640022
+  modified: 1777750640022
+  description: ""
+collection:
+  - name: Auth
+    meta:
+      id: fld_8606f0e8d13e46a799399fb457fae12b
+      created: 1777773275265
+      modified: 1777774987272
+      sortKey: -1777773310577
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/auth/resgister"
+        name: Register
+        meta:
+          id: req_1815b65f34c4436b8aa6bbeb7247a739
+          created: 1777773408387
+          modified: 1777773515755
+          isPrivate: false
+          description: ""
+          sortKey: -1777773408387
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "",
+            	"email": "",
+            	"password": "" 
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/auth/login"
+        name: Login
+        meta:
+          id: req_124b98c1657941ebba7eefccc2e90f33
+          created: 1777773565004
+          modified: 1777776639125
+          isPrivate: false
+          description: ""
+          sortKey: -1777773408287
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email": "teste@mail.com",
+            	"password": "teste2"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/auth/forgot-password"
+        name: Forgot Password
+        meta:
+          id: req_09e239185efa4e75a3c9443b06855ee6
+          created: 1777773848676
+          modified: 1777773965085
+          isPrivate: false
+          description: ""
+          sortKey: -1777773408187
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email": ""
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/auth/forgot-password"
+        name: Reset Password
+        meta:
+          id: req_6df2bf6ae4b448a39a692828c3eac804
+          created: 1777773982501
+          modified: 1777774024275
+          isPrivate: false
+          description: ""
+          sortKey: -1777773408137
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email": "",
+            	"token": "",
+            	"newPassword": ""
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Users
+    meta:
+      id: fld_38e52210f84546c9ab429c91613cfd54
+      created: 1777773310477
+      modified: 1777774470125
+      sortKey: -1777773310552
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/users"
+        name: Listar Todos (Apenas Admin)
+        meta:
+          id: req_d41ee963903e48f5bb63b2e268ce2932
+          created: 1777774052401
+          modified: 1777774485573
+          isPrivate: false
+          description: ""
+          sortKey: -1777774052401
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/users/:id"
+        name: Buscar por ID
+        meta:
+          id: req_641a05b5a0e746d0847cdc248360e399
+          created: 1777774565756
+          modified: 1777774679284
+          isPrivate: false
+          description: ""
+          sortKey: -1777773730394
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: id
+            value: ""
+      - url: "{{ _.base_url }}/users/:id"
+        name: Atualizar
+        meta:
+          id: req_091cb01ee6f2410dacfa6ee98a490465
+          created: 1777774695828
+          modified: 1777774795730
+          isPrivate: false
+          description: ""
+          sortKey: -1777773569390.5
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "",
+            	"email": ""
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: id
+            value: ""
+      - url: "{{ _.base_url }}/users/:id"
+        name: Deletar
+        meta:
+          id: req_90a0e9740d0347e99e2bf94d3cb2ed5f
+          created: 1777774858840
+          modified: 1777774870724
+          isPrivate: false
+          description: ""
+          sortKey: -1777773488888.75
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: id
+            value: ""
+    authentication:
+      type: bearer
+      disabled: false
+      token: "{{ _.token }}"
+  - name: Monitors
+    meta:
+      id: fld_a14422d56afd4513a364741ecae36ca2
+      created: 1777773337954
+      modified: 1777776895503
+      sortKey: -1777773310527
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/monitors"
+        name: Criar Monitor
+        meta:
+          id: req_de759a69d8764ae0a8b2cec161c2297e
+          created: 1777775137606
+          modified: 1777777103061
+          isPrivate: false
+          description: ""
+          sortKey: -1777775137606
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "url": "",
+              "interval_minutes": 0
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/monitors"
+        name: Listar Todos
+        meta:
+          id: req_9658b1b7fe7c448fb7ac8f9f979183b3
+          created: 1777776405998
+          modified: 1777776499189
+          isPrivate: false
+          description: ""
+          sortKey: -1777774595003.5
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/monitors/:id"
+        name: Buscar por ID
+        meta:
+          id: req_a94a95ccdf4e4a3b811abd51e813c371
+          created: 1777776483667
+          modified: 1777777119560
+          isPrivate: false
+          description: ""
+          sortKey: -1777774323702.25
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: id
+            value: ""
+      - url: "{{ _.base_url }}/monitors/:id"
+        name: Atualizar
+        meta:
+          id: req_d4c340df18d04ecfbddfdc14b9a6ff97
+          created: 1777776984813
+          modified: 1777777123327
+          isPrivate: false
+          description: ""
+          sortKey: -1777774188051.625
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"url": "",
+            	"interval_minutes": "",
+            	"status": ""
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: id
+            value: ""
+      - url: "{{ _.base_url }}/monitors/:id"
+        name: Deletar
+        meta:
+          id: req_cba9014d53254574983ece165daabfec
+          created: 1777777145110
+          modified: 1777777156422
+          isPrivate: false
+          description: ""
+          sortKey: -1777774120226.3125
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: id
+            value: ""
+    authentication:
+      type: bearer
+      token: "{{ _.token }}"
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_32ac19de7e621350a10c658d5e3aadb9f958326c
+    created: 1777750640050
+    modified: 1777750640050
+environments:
+  name: Base Environment
+  meta:
+    id: env_32ac19de7e621350a10c658d5e3aadb9f958326c
+    created: 1777750640042
+    modified: 1777775047648
+    isPrivate: false
+  data:
+    base_url: http://localhost:3000/api
+    token: ""

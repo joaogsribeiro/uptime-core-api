@@ -47,6 +47,7 @@ class MonitorController {
   async show(req, res) {
     try {
       const { id } = req.params;
+      
       const monitor = await prisma.monitor.findUnique({
         where: { id },
         include: {
@@ -56,6 +57,11 @@ class MonitorController {
 
       if (!monitor) {
         return res.status(404).json({ error: 'Monitor não encontrado.' });
+      }
+
+      // Trava de segurança: Apenas o dono ou um ADMIN pode ver os detalhes
+      if (req.userRole !== 'ADMIN' && monitor.userId !== req.userId) {
+        return res.status(403).json({ error: 'Você não tem permissão para acessar este monitor.' });
       }
 
       return res.status(200).json(monitor);
@@ -73,6 +79,11 @@ class MonitorController {
       const monitorExists = await prisma.monitor.findUnique({ where: { id } });
       if (!monitorExists) {
         return res.status(404).json({ error: 'Monitor não encontrado.' });
+      }
+
+      // Trava de segurança IDOR
+      if (req.userRole !== 'ADMIN' && monitorExists.userId !== req.userId) {
+        return res.status(403).json({ error: 'Você não tem permissão para editar este monitor.' });
       }
 
       if (url) {
@@ -103,6 +114,11 @@ class MonitorController {
       const monitorExists = await prisma.monitor.findUnique({ where: { id } });
       if (!monitorExists) {
         return res.status(404).json({ error: 'Monitor não encontrado.' });
+      }
+
+      // Trava de segurança IDOR
+      if (req.userRole !== 'ADMIN' && monitorExists.userId !== req.userId) {
+        return res.status(403).json({ error: 'Você não tem permissão para deletar este monitor.' });
       }
 
       await prisma.monitor.delete({ where: { id } });
