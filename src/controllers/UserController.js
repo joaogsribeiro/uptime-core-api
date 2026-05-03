@@ -11,7 +11,7 @@ class UserController {
       }
 
       const userExists = await prisma.user.findUnique({
-        where: { email }
+        where: { email },
       });
 
       if (userExists) {
@@ -25,15 +25,15 @@ class UserController {
         data: {
           name,
           email,
-          password_hash
+          password_hash,
         },
         select: {
           id: true,
           name: true,
           email: true,
           role: true,
-          createdAt: true
-        }
+          createdAt: true,
+        },
       });
 
       return res.status(201).json(user);
@@ -46,7 +46,9 @@ class UserController {
   async index(req, res) {
     try {
       if (req.userRole !== 'ADMIN') {
-        return res.status(403).json({ error: 'Acesso negado. Apenas administradores podem listar usuários.' });
+        return res
+          .status(403)
+          .json({ error: 'Acesso negado. Apenas administradores podem listar usuários.' });
       }
 
       const users = await prisma.user.findMany({
@@ -55,8 +57,8 @@ class UserController {
           name: true,
           email: true,
           role: true,
-          createdAt: true
-        }
+          createdAt: true,
+        },
       });
       return res.status(200).json(users);
     } catch (error) {
@@ -75,7 +77,7 @@ class UserController {
 
       const user = await prisma.user.findUnique({
         where: { id },
-        select: { id: true, name: true, email: true, role: true, createdAt: true }
+        select: { id: true, name: true, email: true, role: true, createdAt: true },
       });
 
       if (!user) {
@@ -106,7 +108,7 @@ class UserController {
       const user = await prisma.user.update({
         where: { id },
         data: { name, email },
-        select: { id: true, name: true, email: true, role: true, updatedAt: true }
+        select: { id: true, name: true, email: true, role: true, updatedAt: true },
       });
 
       return res.status(200).json(user);
@@ -130,8 +132,8 @@ class UserController {
       }
 
       await prisma.user.delete({ where: { id } });
-      
-      return res.status(204).send(); 
+
+      return res.status(204).send();
     } catch (error) {
       console.error('Erro ao deletar usuário:', error);
       return res.status(500).json({ error: 'Erro interno do servidor.' });

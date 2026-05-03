@@ -13,7 +13,7 @@ class SessionController {
 
       // 1. Verifica se o e-mail existe no banco
       const user = await prisma.user.findUnique({
-        where: { email }
+        where: { email },
       });
 
       if (!user) {
@@ -30,17 +30,17 @@ class SessionController {
 
       // 3. Geração do Token JWT
       const { id, name, role } = user;
-      
+
       // Assina o token embutindo o ID e a Role (essencial para a regra de Admin no futuro)
       const token = jwt.sign(
-        { id, role }, 
+        { id, role },
         process.env.JWT_SECRET, // Essa chave deve estar no seu arquivo .env
         { expiresIn: process.env.JWT_EXPIRES_IN || '1d' }
       );
 
       return res.status(200).json({
         user: { id, name, email, role },
-        token
+        token,
       });
     } catch (error) {
       console.error('Erro na autenticação:', error);

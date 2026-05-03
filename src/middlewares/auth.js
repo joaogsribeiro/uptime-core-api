@@ -22,6 +22,7 @@ export default async (req, res, next) => {
     // Permite que o fluxo continue para o Controller
     return next();
   } catch (error) {
+    console.error('Token inválido ou expirado:', error);
     return res.status(401).json({ error: 'Token inválido ou expirado.' });
   }
 };

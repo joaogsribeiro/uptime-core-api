@@ -13,6 +13,7 @@ class MonitorController {
       try {
         new URL(url);
       } catch (err) {
+        console.error('Formato de URL inválido:', err);
         return res.status(400).json({ error: 'Formato de URL inválido.' });
       }
 
@@ -20,8 +21,8 @@ class MonitorController {
         data: {
           userId,
           url,
-          interval_minutes: interval_minutes || 5
-        }
+          interval_minutes: interval_minutes || 5,
+        },
       });
 
       return res.status(201).json(monitor);
@@ -34,7 +35,7 @@ class MonitorController {
   async index(req, res) {
     try {
       const monitors = await prisma.monitor.findMany({
-        where: { userId: req.userId }
+        where: { userId: req.userId },
       });
       return res.status(200).json(monitors);
     } catch (error) {
@@ -49,8 +50,8 @@ class MonitorController {
       const monitor = await prisma.monitor.findUnique({
         where: { id },
         include: {
-          user: { select: { name: true, email: true } }
-        }
+          user: { select: { name: true, email: true } },
+        },
       });
 
       if (!monitor) {
@@ -78,13 +79,14 @@ class MonitorController {
         try {
           new URL(url);
         } catch (err) {
+          console.error('Formato de URL inválido:', err);
           return res.status(400).json({ error: 'Formato de URL inválido.' });
         }
       }
 
       const monitor = await prisma.monitor.update({
         where: { id },
-        data: { url, interval_minutes, status }
+        data: { url, interval_minutes, status },
       });
 
       return res.status(200).json(monitor);
@@ -104,7 +106,7 @@ class MonitorController {
       }
 
       await prisma.monitor.delete({ where: { id } });
-      
+
       return res.status(204).send();
     } catch (error) {
       console.error('Erro ao deletar monitor:', error);

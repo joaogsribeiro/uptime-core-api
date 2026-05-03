@@ -16,7 +16,7 @@ app.use(express.json());
 app.get('/api/health', (req, res) => {
   return res.status(200).json({
     status: 'ok',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 

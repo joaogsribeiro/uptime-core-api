@@ -13,12 +13,14 @@ class PasswordController {
 
       if (!user) {
         // Retornamos 200 OK mesmo com erro para evitar "Email Enumeration" (vazamento de dados)
-        return res.status(200).json({ message: 'Se o e-mail existir, um link de recuperação será enviado.' });
+        return res
+          .status(200)
+          .json({ message: 'Se o e-mail existir, um link de recuperação será enviado.' });
       }
 
       // Gera um token aleatório de 20 caracteres em formato hexadecimal
       const token = crypto.randomBytes(20).toString('hex');
-      
+
       // Define a expiração para 1 hora a partir de agora
       const now = new Date();
       now.setHours(now.getHours() + 1);
@@ -28,7 +30,7 @@ class PasswordController {
         data: {
           passwordResetToken: token,
           passwordResetExpires: now,
-        }
+        },
       });
 
       // Envio do e-mail
@@ -39,13 +41,17 @@ class PasswordController {
         html: `<p>Você solicitou uma recuperação de senha.</p>
                <p>Utilize o token abaixo para redefinir sua senha:</p>
                <h3>${token}</h3>
-               <p>Este token expira em 1 hora.</p>`
+               <p>Este token expira em 1 hora.</p>`,
       });
 
-      return res.status(200).json({ message: 'Se o e-mail existir, um link de recuperação será enviado.' });
+      return res
+        .status(200)
+        .json({ message: 'Se o e-mail existir, um link de recuperação será enviado.' });
     } catch (error) {
       console.error('Erro no forgotPassword:', error);
-      return res.status(500).json({ error: 'Erro interno no servidor ao tentar recuperar a senha.' });
+      return res
+        .status(500)
+        .json({ error: 'Erro interno no servidor ao tentar recuperar a senha.' });
     }
   }
 
@@ -84,14 +90,16 @@ class PasswordController {
         data: {
           password_hash,
           passwordResetToken: null,
-          passwordResetExpires: null
-        }
+          passwordResetExpires: null,
+        },
       });
 
       return res.status(200).json({ message: 'Senha atualizada com sucesso.' });
     } catch (error) {
       console.error('Erro no resetPassword:', error);
-      return res.status(500).json({ error: 'Erro interno no servidor ao tentar redefinir a senha.' });
+      return res
+        .status(500)
+        .json({ error: 'Erro interno no servidor ao tentar redefinir a senha.' });
     }
   }
 }
