@@ -51,6 +51,7 @@ model User {
 model Monitor {
   id               String        @id @default(uuid())
   userId           String
+  name             String
   url              String
   interval_minutes Int           @default(5)
   status           MonitorStatus @default(ACTIVE)
@@ -83,6 +84,7 @@ model Incident {
   id          String         @id @default(uuid())
   monitorId   String
   status      IncidentStatus @default(OPEN)
+  errorLog    String?
   startedAt   DateTime       @default(now())
   resolvedAt  DateTime?      // Nulo enquanto o incidente estiver aberto
 

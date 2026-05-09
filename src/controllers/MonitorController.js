@@ -3,11 +3,11 @@ import prisma from '../config/database.js';
 class MonitorController {
   async create(req, res) {
     try {
-      const { url, interval_minutes } = req.body;
+      const { name, url, interval_minutes } = req.body;
       const userId = req.userId;
 
-      if (!userId || !url) {
-        return res.status(400).json({ error: 'A URL é obrigatória.' });
+      if (!userId || !name || !url) {
+        return res.status(400).json({ error: 'Os campos nome e URL são obrigatórios.' });
       }
 
       try {
@@ -20,6 +20,7 @@ class MonitorController {
       const monitor = await prisma.monitor.create({
         data: {
           userId,
+          name,
           url,
           interval_minutes: interval_minutes || 5,
         },
@@ -74,7 +75,7 @@ class MonitorController {
   async update(req, res) {
     try {
       const { id } = req.params;
-      const { url, interval_minutes, status } = req.body;
+      const { name, url, interval_minutes, status } = req.body;
 
       const monitorExists = await prisma.monitor.findUnique({ where: { id } });
       if (!monitorExists) {
@@ -97,7 +98,7 @@ class MonitorController {
 
       const monitor = await prisma.monitor.update({
         where: { id },
-        data: { url, interval_minutes, status },
+        data: { name, url, interval_minutes, status },
       });
 
       return res.status(200).json(monitor);
