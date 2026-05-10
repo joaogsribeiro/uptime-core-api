@@ -11,7 +11,7 @@ class PingService {
     try {
       // Configuramos um timeout de 10 segundos. Se o site demorar mais que isso, consideramos fora do ar.
       const response = await axios.get(url, {
-        timeout: 10000, 
+        timeout: 10000,
         // Não queremos baixar o HTML inteiro da página para economizar memória do servidor,
         // mas alguns sites bloqueiam requisições HEAD, então usamos GET com um limite de bytes se possível,
         // ou apenas aceitamos o fluxo padrão.

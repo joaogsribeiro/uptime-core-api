@@ -11,16 +11,16 @@ class SchedulerService {
     cron.schedule('* * * * *', async () => {
       try {
         const currentMinute = new Date().getMinutes();
-        
+
         // 1. Busca apenas os monitores que estão com status ACTIVE
         const activeMonitors = await prisma.monitor.findMany({
-          where: { status: 'ACTIVE' }
+          where: { status: 'ACTIVE' },
         });
 
         if (activeMonitors.length === 0) return;
 
         // 2. Filtra quem deve rodar NESTE minuto específico
-        const monitorsToRun = activeMonitors.filter(monitor => {
+        const monitorsToRun = activeMonitors.filter((monitor) => {
           // Lógica de intervalo: Se o intervalo é 5, roda nos minutos 0, 5, 10, 15...
           return currentMinute % monitor.interval_minutes === 0;
         });
@@ -36,7 +36,7 @@ class SchedulerService {
             const pingResult = await PingService.execute(monitor.url);
             await IncidentService.handleStatus(monitor.id, pingResult);
           } catch (err) {
-            // Isolamos o try/catch por monitor! 
+            // Isolamos o try/catch por monitor!
             // Se um site explodir, não derruba a verificação dos outros.
             console.error(`Falha isolada ao processar monitor ${monitor.id}:`, err);
           }
