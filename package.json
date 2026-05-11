@@ -10,7 +10,10 @@
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "db:migrate": "prisma migrate deploy",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test -- jest --runInBand --forceExit",
+    "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test -- jest --watch --runInBand --forceExit",
+    "test:db-setup": "dotenv -e .env.test -- npx prisma migrate deploy"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.7.0",
@@ -25,15 +28,19 @@
     "pg": "^8.20.0"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "dotenv": "^17.4.2",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^10.3.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "husky": "^9.1.7",
+    "jest": "^30.4.2",
     "lint-staged": "^17.0.4",
     "nodemon": "^3.1.14",
     "prettier": "^3.8.3",
-    "prisma": "^7.7.0"
+    "prisma": "^7.7.0",
+    "supertest": "^7.2.2"
   },
   "lint-staged": {
     "*.js": "eslint --fix"

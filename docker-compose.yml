@@ -32,5 +32,20 @@ services:
     depends_on:
       - postgres_db
 
+  # Contêiner isolado para os testes
+  postgres_test:
+    image: postgres:15-alpine
+    container_name: uptime_postgres_test
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: api_monitor_test_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_test_data:/var/lib/postgresql/data
+
 volumes:
   pgdata:
+  pg_test_data:

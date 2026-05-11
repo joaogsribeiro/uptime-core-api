@@ -53,7 +53,7 @@ collection:
         meta:
           id: req_124b98c1657941ebba7eefccc2e90f33
           created: 1777773565004
-          modified: 1778367091706
+          modified: 1778541260177
           isPrivate: false
           description: ""
           sortKey: -1777773408287
@@ -85,7 +85,7 @@ collection:
         meta:
           id: req_09e239185efa4e75a3c9443b06855ee6
           created: 1777773848676
-          modified: 1777773965085
+          modified: 1778541265036
           isPrivate: false
           description: ""
           sortKey: -1777773408187
@@ -111,12 +111,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.base_url }}/auth/forgot-password"
+      - url: "{{ _.base_url }}/auth/reset-password"
         name: Reset Password
         meta:
           id: req_6df2bf6ae4b448a39a692828c3eac804
           created: 1777773982501
-          modified: 1777774024275
+          modified: 1778541271569
           isPrivate: false
           description: ""
           sortKey: -1777773408137
@@ -361,7 +361,7 @@ collection:
         meta:
           id: req_d4c340df18d04ecfbddfdc14b9a6ff97
           created: 1777776984813
-          modified: 1778367135216
+          modified: 1778541317186
           isPrivate: false
           description: ""
           sortKey: -1777774188051.625
@@ -467,7 +467,7 @@ environments:
   meta:
     id: env_32ac19de7e621350a10c658d5e3aadb9f958326c
     created: 1777750640042
-    modified: 1778367084726
+    modified: 1778541344144
     isPrivate: false
   data:
     base_url: http://localhost:3000/api
