@@ -42,6 +42,9 @@ jobs:
       - name: 📦 Instalação de Dependências
         run: npm ci
 
+      - name: ⚙️ Geração do Prisma Client
+        run: npx prisma generate
+
       - name: 🧹 Análise Estática (Linter)
         run: npm run lint
 
