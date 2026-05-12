@@ -1,0 +1,64 @@
+name: UptimeCore CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "develop", "main" ]
+  pull_request:
+    branches: [ "develop", "main" ]
+
+jobs:
+  build-and-test:
+    name: Code Quality & Tests
+    runs-on: ubuntu-latest
+
+    # Provisiona o banco de dados temporário isolado
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: api_monitor_test_db
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: 📥 Checkout do Código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Necessário para análises futuras do SonarCloud
+
+      - name: ⚙️ Setup do Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: 📦 Instalação de Dependências
+        run: npm ci
+
+      - name: 🧹 Análise Estática (Linter)
+        run: npm run lint
+
+      - name: 🔐 Configuração do Ambiente de Testes
+        run: |
+          echo 'DATABASE_URL="postgresql://admin:admin@localhost:5433/api_monitor_test_db?schema=public"' > .env.test
+          echo 'JWT_SECRET="segredo_super_seguro_da_pipeline"' >> .env.test
+          echo 'PORT=3001' >> .env.test
+
+      - name: 🗄️ Execução das Migrações (Prisma)
+        run: npm run test:db-setup
+
+      - name: 🧪 Execução dos Testes Automatizados
+        run: npm test
+
+      # - name: 📊 Análise de Qualidade (SonarCloud)
+      #   uses: SonarSource/sonarcloud-github-action@master
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
