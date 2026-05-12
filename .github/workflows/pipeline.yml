@@ -11,6 +11,10 @@ jobs:
     name: Code Quality & Tests
     runs-on: ubuntu-latest
 
+    # Força as Actions internas do GitHub a usarem Node 24
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     # Provisiona o banco de dados temporário isolado
     services:
       postgres:
