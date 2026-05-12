@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # Nosso banco de dados (já estava aqui)
+  # Nosso banco de dados
   postgres_db:
     image: postgres:15-alpine
     container_name: uptime_postgres
@@ -14,8 +14,14 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    # Verifica de tempos em tempos se o banco está pronto
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d api_monitor_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  # Nova adição: A nossa API
+  # A nossa API
   api:
     build: .
     container_name: uptime_api
@@ -23,14 +29,16 @@ services:
     ports:
       - "3000:3000"
     environment:
-      # O container da API se conecta ao container do banco pelo nome do serviço (postgres_db)
       DATABASE_URL: "postgresql://admin:admin123@postgres_db:5432/api_monitor_db?schema=public"
     volumes:
-      # Espelha o seu código local para dentro do container (permite o nodemon funcionar)
       - .:/usr/src/app
       - /usr/src/app/node_modules
+    # Só deixa a API subir quando o healthcheck do banco der "OK"
     depends_on:
-      - postgres_db
+      postgres_db:
+        condition: service_healthy
+    # Sobrescreve o comando padrão para rodar as migrações ANTES de ligar o servidor
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run dev"
 
   # Contêiner isolado para os testes
   postgres_test:
