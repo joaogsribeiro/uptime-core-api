@@ -88,7 +88,13 @@ app.post('/api/auth/forgot-password', (req, res) => {
         required: true,
         content: {
           "application/json": {
-            schema: { type: "object", properties: { email: { type: "string", example: "joao@exemplo.com" } } }
+            schema: {
+               type: "object",
+               required: ["email"],
+               properties: {
+                 email: { type: "string", example: "joao@exemplo.com" }
+               }
+             }
           }
         }
       } */
@@ -253,7 +259,7 @@ app.put('/api/monitors/:id', (req, res) => {
         required: true,
         content: {
           "application/json": {
-            schema: { type: "object", properties: { name: { type: "string" }, url: { type: "string" }, interval_minutes: { type: "integer" }, status: { type: "string" } } }
+            schema: { type: "object", properties: { name: { type: "string" }, url: { type: "string" }, interval_minutes: { type: "integer" }, status: { type: "string", enum: ["ACTIVE", "PAUSED"] } } }
           }
         }
       } */
@@ -288,6 +294,8 @@ app.get('/api/admin/status', (req, res) => {
   /* #swagger.description = 'Retorna métricas agregadas do sistema, como total de usuários e monitores. Requer perfil ADMIN.' */
   /* #swagger.security = [{ bearerAuth: [] }] */
   /* #swagger.responses[200] = { description: 'Métricas retornadas com sucesso.' } */
+  /* #swagger.responses[401] = { description: 'Token ausente ou inválido.' } */
+  /* #swagger.responses[403] = { description: 'Acesso negado. Requer perfil ADMIN.' } */
   /* #swagger.responses[500] = { description: 'Erro ao buscar métricas.' } */
   res.status(200).json({ system: 'UptimeCore', metrics: { users: 0, monitors: 0 } });
 });
