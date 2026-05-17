@@ -16,10 +16,13 @@ const app = express();
 app.disable('x-powered-by');
 
 // Configuração Estrita de CORS
+// Trata a variável de ambiente, convertendo uma string separada por vírgulas em um array.
+// Se a variável não existir (como no ambiente local de desenvolvimento), adota '*' como fallback.
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : '*';
+
 app.use(
   cors({
-    // Em desenvolvimento aceita de qualquer lugar, em produção só do seu domínio
-    origin: process.env.NODE_ENV === 'production' ? ['https://seu-dominio-futuro.com.br'] : '*',
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
