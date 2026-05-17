@@ -35,7 +35,7 @@ jobs:
       - name: 📥 Checkout do Código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Necessário para análises futuras do SonarCloud
+          fetch-depth: 0
 
       - name: ⚙️ Setup do Node.js
         uses: actions/setup-node@v4

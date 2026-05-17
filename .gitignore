@@ -33,3 +33,6 @@ Thumbs.db
 *.db
 *.sqlite
 /src/generated/prisma
+
+# Artefatos Gerados Automaticamente (Build)
+src/config/swagger-output.json
