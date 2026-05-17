@@ -10,8 +10,19 @@ import AppError from './utils/AppError.js';
 
 const app = express();
 
-// Middlewares
-app.use(cors());
+// 1. Blindagem de Cabeçalho (Remove o X-Powered-By)
+app.disable('x-powered-by');
+
+// 2. Configuração Estrita de CORS
+app.use(
+  cors({
+    // Em desenvolvimento aceita de qualquer lugar, em produção só do seu domínio
+    origin: process.env.NODE_ENV === 'production' ? ['https://seu-dominio-futuro.com.br'] : '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+
 app.use(express.json());
 
 // Rota de Health Check (Crítica para a Infraestrutura)
