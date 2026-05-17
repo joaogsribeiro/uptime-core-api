@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # Nosso banco de dados
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: uptime_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: api_monitor_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # Verifica de tempos em tempos se o banco está pronto
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d api_monitor_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # A nossa API
+  api:
+    build: .
+    container_name: uptime_api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://admin:admin123@postgres_db:5432/api_monitor_db?schema=public"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    # Só deixa a API subir quando o healthcheck do banco der "OK"
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    # Sobrescreve o comando padrão para rodar as migrações ANTES de ligar o servidor
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run dev"
+
+  # Contêiner isolado para os testes
+  postgres_test:
+    image: postgres:15-alpine
+    container_name: uptime_postgres_test
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: api_monitor_test_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_test_data:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+  pg_test_data:

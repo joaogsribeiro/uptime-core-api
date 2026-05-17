@@ -1,0 +1,52 @@
+{
+  "name": "uptime-core-api",
+  "version": "1.0.0",
+  "description": "API de monitoramento de disponibilidade e tempo de resposta",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "swagger": "node scripts/generateSwagger.js",
+    "predev": "npm run swagger",
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "db:migrate": "prisma migrate deploy",
+    "prepare": "husky",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test -- jest --runInBand --forceExit",
+    "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test -- jest --watch --runInBand --forceExit",
+    "test:db-setup": "dotenv -e .env.test -- npx prisma migrate deploy"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "axios": "^1.16.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.7",
+    "pg": "^8.20.0",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.4.2",
+    "dotenv-cli": "^11.0.0",
+    "eslint": "^10.3.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "husky": "^9.1.7",
+    "jest": "^30.4.2",
+    "lint-staged": "^17.0.4",
+    "nodemon": "^3.1.14",
+    "prettier": "^3.8.3",
+    "prisma": "^7.7.0",
+    "swagger-autogen": "^2.23.7",
+    "supertest": "^7.2.2"
+  },
+  "lint-staged": {
+    "*.js": "eslint --fix"
+  }
+}
