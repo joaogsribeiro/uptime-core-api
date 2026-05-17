@@ -1,10 +1,12 @@
 import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
+import { globalErrorHandler } from './middlewares/errorMiddleware.js';
 import adminRoutes from './routes/adminRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import monitorRoutes from './routes/monitorRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import AppError from './utils/AppError.js';
 
 const app = express();
 
@@ -29,5 +31,13 @@ app.use('/api/monitors', monitorRoutes);
 
 // Rotas Administrativas (Protegidas por JWT + Admin Middleware)
 app.use('/api/admin', adminRoutes);
+
+// 1. Tratamento para rotas que não existem (404)
+app.use((req, res, next) => {
+  next(new AppError(`A rota ${req.originalUrl} não foi encontrada neste servidor.`, 404));
+});
+
+// 2. O Middleware Global de Erro
+app.use(globalErrorHandler);
 
 export default app;
