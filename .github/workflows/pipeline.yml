@@ -61,11 +61,12 @@ jobs:
       - name: 🗄️ Execução das Migrações (Prisma)
         run: npm run test:db-setup
 
-      - name: 🧪 Execução dos Testes Automatizados
-        run: npm test
+      - name: 🧪 Execução dos Testes e Cobertura
+        # A flag --coverage faz o Jest gerar a pasta /coverage com o arquivo lcov.info
+        run: npm test -- --coverage
 
-      # - name: 📊 Análise de Qualidade (SonarCloud)
-      #   uses: SonarSource/sonarcloud-github-action@master
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: 📊 Análise de Qualidade (SonarCloud)
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
