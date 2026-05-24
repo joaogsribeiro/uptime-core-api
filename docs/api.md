@@ -625,29 +625,212 @@ curl http://localhost:3000/api/admin/status \
 }
 ```
 
+## Incidentes Operacionais
+
+As rotas abaixo permitem consulta e manutenção controlada de incidentes operacionais.
+
+> Incidentes são criados e resolvidos automaticamente pelo `IncidentService` durante o fluxo normal de monitoramento. As rotas administrativas existem para auditoria, suporte e manutenção controlada do histórico operacional.
+
+Todas as rotas exigem perfil `ADMIN`.
+
+### Listar Incidentes
+
+```http
+GET /api/admin/incidents
+```
+
+Filtros opcionais:
+
+| Query Param | Descrição |
+|---|---|
+| `status` | Filtra por `OPEN` ou `RESOLVED` |
+| `monitorId` | Filtra incidentes de um monitor específico |
+
+Exemplo:
+
+```http
+GET /api/admin/incidents?status=OPEN
+```
+
+### Buscar Incidente por ID
+
+```http
+GET /api/admin/incidents/:id
+```
+
+Retorna o incidente com dados do monitor e alertas associados.
+
+### Resolver Incidente
+
+```http
+PATCH /api/admin/incidents/:id/resolve
+```
+
+Marca um incidente aberto como `RESOLVED` e preenche `resolvedAt`.
+
+### Reabrir Incidente
+
+```http
+PATCH /api/admin/incidents/:id/reopen
+```
+
+Marca um incidente resolvido como `OPEN` e limpa `resolvedAt`.
+
+### Remover Incidente
+
+```http
+DELETE /api/admin/incidents/:id
+```
+
+Remove um incidente por ação administrativa.
+
+> Use com cuidado: a remoção afeta o histórico operacional.
+
+## Alertas Operacionais
+
+As rotas abaixo permitem consulta e limpeza administrativa de alertas.
+
+> Alertas são gerados automaticamente pelo `AlertService` em transições de falha e recuperação. Não há criação manual de alertas por endpoint para preservar a integridade do histórico.
+
+Todas as rotas exigem perfil `ADMIN`.
+
+### Listar Alertas
+
+```http
+GET /api/admin/alerts
+```
+
+Filtros opcionais:
+
+| Query Param | Descrição |
+|---|---|
+| `monitorId` | Filtra alertas de um monitor específico |
+| `incidentId` | Filtra alertas vinculados a um incidente |
+| `type` | Filtra alertas por tipo, como `EMAIL` |
+
+### Buscar Alerta por ID
+
+```http
+GET /api/admin/alerts/:id
+```
+
+Retorna o alerta com dados do monitor e do incidente relacionado.
+
+### Remover Alerta
+
+```http
+DELETE /api/admin/alerts/:id
+```
+
+Remove um alerta por ação administrativa.
+
+> Use com cuidado: a remoção afeta o histórico de notificações.
+
+## Execuções de Checagem
+
+As rotas abaixo permitem consulta e limpeza administrativa do histórico de checagens.
+
+> Execuções de checagem são criadas automaticamente pelo fluxo de monitoramento. Elas representam histórico técnico e não devem ser criadas ou editadas manualmente.
+
+Todas as rotas exigem perfil `ADMIN`.
+
+### Listar Execuções
+
+```http
+GET /api/admin/check-executions
+```
+
+Filtros opcionais:
+
+| Query Param | Descrição |
+|---|---|
+| `monitorId` | Filtra execuções de um monitor específico |
+| `statusCode` | Filtra execuções por código HTTP |
+
+Exemplo:
+
+```http
+GET /api/admin/check-executions?statusCode=500
+```
+
+### Buscar Execução por ID
+
+```http
+GET /api/admin/check-executions/:id
+```
+
+Retorna a execução com dados do monitor relacionado.
+
+### Remover Execução
+
+```http
+DELETE /api/admin/check-executions/:id
+```
+
+Remove uma execução por ação administrativa.
+
+> Use com cuidado: a remoção afeta o histórico de disponibilidade e tempo de resposta.
+
+---
+
+## Decisão de Domínio sobre Entidades Operacionais
+
+A API não expõe CRUD genérico para `Incident`, `Alert` e `CheckExecution`.
+
+Essa decisão é intencional.
+
+Essas entidades são geradas pelo fluxo interno de monitoramento:
+
+- `CheckExecution` é criada a cada checagem executada.
+- `Incident` é criado quando um monitor falha.
+- `Incident` é resolvido quando o monitor volta a responder.
+- `Alert` é criado quando ocorre uma transição de falha ou recuperação.
+
+Permitir criação e edição manual genérica dessas entidades poderia comprometer a integridade do histórico operacional.
+
+Por isso, a API oferece endpoints administrativos para:
+
+- consultar registros;
+- filtrar dados operacionais;
+- resolver ou reabrir incidentes de forma controlada;
+- remover registros apenas em ações administrativas de manutenção.
+
+O CRUD completo permanece disponível para entidades diretamente gerenciáveis, como usuários e monitores.
+
 ---
 
 ## 📋 **Resumo dos Endpoints**
 
-| Método   | Rota                        | Autenticação | Descrição                      |
-| -------- | --------------------------- | ------------ | ------------------------------ |
-| `GET`    | `/`                         | Não          | Apresentação da API            |
-| `GET`    | `/api`                      | Não          | Apresentação da API            |
-| `GET`    | `/api/health`               | Não          | Health check                   |
-| `POST`   | `/api/auth/register`        | Não          | Registrar usuário              |
-| `POST`   | `/api/auth/login`           | Não          | Login                          |
-| `POST`   | `/api/auth/forgot-password` | Não          | Solicitar recuperação de senha |
-| `POST`   | `/api/auth/reset-password`  | Não          | Redefinir senha                |
-| `GET`    | `/api/users`                | Admin        | Listar usuários                |
-| `GET`    | `/api/users/:id`            | JWT          | Buscar usuário                 |
-| `PUT`    | `/api/users/:id`            | JWT          | Atualizar usuário              |
-| `DELETE` | `/api/users/:id`            | JWT          | Remover usuário                |
-| `POST`   | `/api/monitors`             | JWT          | Criar monitor                  |
-| `GET`    | `/api/monitors`             | JWT          | Listar monitores               |
-| `GET`    | `/api/monitors/:id`         | JWT          | Buscar monitor                 |
-| `PUT`    | `/api/monitors/:id`         | JWT          | Atualizar monitor              |
-| `DELETE` | `/api/monitors/:id`         | JWT          | Remover monitor                |
-| `GET`    | `/api/admin/status`         | Admin        | Métricas administrativas       |
+| Método   | Rota                               | Autenticação | Descrição                      |
+| -------- | ---------------------------------- | ------------ | ------------------------------ |
+| `GET`    | `/`                                | Não          | Apresentação da API            |
+| `GET`    | `/api`                             | Não          | Apresentação da API            |
+| `GET`    | `/api/health`                      | Não          | Health check                   |
+| `POST`   | `/api/auth/register`               | Não          | Registrar usuário              |
+| `POST`   | `/api/auth/login`                  | Não          | Login                          |
+| `POST`   | `/api/auth/forgot-password`        | Não          | Solicitar recuperação de senha |
+| `POST`   | `/api/auth/reset-password`         | Não          | Redefinir senha                |
+| `GET`    | `/api/users`                       | Admin        | Listar usuários                |
+| `GET`    | `/api/users/:id`                   | JWT          | Buscar usuário                 |
+| `PUT`    | `/api/users/:id`                   | JWT          | Atualizar usuário              |
+| `DELETE` | `/api/users/:id`                   | JWT          | Remover usuário                |
+| `POST`   | `/api/monitors`                    | JWT          | Criar monitor                  |
+| `GET`    | `/api/monitors`                    | JWT          | Listar monitores               |
+| `GET`    | `/api/monitors/:id`                | JWT          | Buscar monitor                 |
+| `PUT`    | `/api/monitors/:id`                | JWT          | Atualizar monitor              |
+| `DELETE` | `/api/monitors/:id`                | JWT          | Remover monitor                |
+| `GET`    | `/api/admin/status`                | Admin        | Métricas administrativas       |
+| `GET`    | `/api/admin/incidents`             | Admin        | Listar incidentes operacionais |
+| `GET`    | `/api/admin/incidents/:id`         | Admin        | Buscar incidente operacional   |
+| `PATCH`  | `/api/admin/incidents/:id/resolve` | Admin        | Resolver incidente             |
+| `PATCH`  | `/api/admin/incidents/:id/reopen`  | Admin        | Reabrir incidente              |
+| `DELETE` | `/api/admin/incidents/:id`         | Admin        | Remover incidente              |
+| `GET`    | `/api/admin/alerts`                | Admin        | Listar alertas operacionais    |
+| `GET`    | `/api/admin/alerts/:id`            | Admin        | Buscar alerta operacional      |
+| `DELETE` | `/api/admin/alerts/:id`            | Admin        | Remover alerta                 |
+| `GET`    | `/api/admin/check-executions`      | Admin        | Listar execuções de checagem   |
+| `GET`    | `/api/admin/check-executions/:id`  | Admin        | Buscar execução de checagem    |
+| `DELETE` | `/api/admin/check-executions/:id`  | Admin        | Remover execução de checagem   |
 
 ---
 
