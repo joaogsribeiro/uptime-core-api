@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import prisma from '../config/database.js';
+import AdminIncidentController from '../controllers/AdminIncidentController.js';
 import authMiddleware from '../middlewares/auth.js';
 import isAdmin from '../middlewares/isAdmin.js';
 
@@ -27,5 +28,13 @@ routes.get('/status', async (req, res) => {
     return res.status(500).json({ error: 'Erro ao buscar métricas.' });
   }
 });
+
+// Endpoints administrativos para auditoria e manutenção de incidentes operacionais.
+// Incidentes continuam sendo criados automaticamente pelo IncidentService.
+routes.get('/incidents', AdminIncidentController.index);
+routes.get('/incidents/:id', AdminIncidentController.show);
+routes.patch('/incidents/:id/resolve', AdminIncidentController.resolve);
+routes.patch('/incidents/:id/reopen', AdminIncidentController.reopen);
+routes.delete('/incidents/:id', AdminIncidentController.delete);
 
 export default routes;
