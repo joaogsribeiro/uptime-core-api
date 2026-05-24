@@ -2,6 +2,7 @@ const app = {
   get: () => {},
   post: () => {},
   put: () => {},
+  patch: () => {},
   delete: () => {},
 };
 
@@ -298,6 +299,195 @@ app.get('/api/admin/status', (req, res) => {
   /* #swagger.responses[403] = { description: 'Acesso negado. Requer perfil ADMIN.' } */
   /* #swagger.responses[500] = { description: 'Erro ao buscar métricas.' } */
   res.status(200).json({ system: 'UptimeCore', metrics: { users: 0, monitors: 0 } });
+});
+
+app.get('/api/admin/incidents', (req, res) => {
+  /* #swagger.tags = ['Admin - Incidents'] */
+  /* #swagger.summary = 'Lista incidentes operacionais' */
+  /* #swagger.description = 'Retorna incidentes gerados automaticamente pelo monitoramento. Requer perfil ADMIN. Permite filtros opcionais por status e monitorId.' */
+  /* #swagger.security = [{ bearerAuth: [] }] */
+  /* #swagger.parameters['status'] = { in: 'query', required: false, description: 'Filtra incidentes por status.', schema: { type: 'string', enum: ['OPEN', 'RESOLVED'] } } */
+  /* #swagger.parameters['monitorId'] = { in: 'query', required: false, description: 'Filtra incidentes por monitor.', schema: { type: 'string' } } */
+  /* #swagger.responses[200] = { description: 'Lista de incidentes retornada com sucesso.' } */
+  /* #swagger.responses[400] = { description: 'Status de incidente inválido.' } */
+  /* #swagger.responses[401] = { description: 'Token ausente ou inválido.' } */
+  /* #swagger.responses[403] = { description: 'Acesso negado. Requer perfil ADMIN.' } */
+  /* #swagger.responses[500] = { description: 'Erro interno do servidor.' } */
+  res.status(200).json([]);
+});
+
+app.get('/api/admin/incidents/:id', (req, res) => {
+  /* #swagger.tags = ['Admin - Incidents'] */
+  /* #swagger.summary = 'Busca um incidente operacional pelo ID' */
+  /* #swagger.description = 'Retorna os detalhes de um incidente, incluindo monitor relacionado e alertas associados. Requer perfil ADMIN.' */
+  /* #swagger.security = [{ bearerAuth: [] }] */
+  /* #swagger.parameters['id'] = { in: 'path', required: true, description: 'ID do incidente.', schema: { type: 'string' } } */
+  /* #swagger.responses[200] = { description: 'Incidente encontrado com sucesso.' } */
+  /* #swagger.responses[401] = { description: 'Token ausente ou inválido.' } */
+  /* #swagger.responses[403] = { description: 'Acesso negado. Requer perfil ADMIN.' } */
+  /* #swagger.responses[404] = { description: 'Incidente não encontrado.' } */
+  /* #swagger.responses[500] = { description: 'Erro interno do servidor.' } */
+  res.status(200).json({
+    id: 'incident-id',
+    monitorId: 'monitor-id',
+    status: 'OPEN',
+    errorLog: 'HTTP Error 500',
+    startedAt: '2026-05-24T00:20:00.881Z',
+    resolvedAt: null,
+  });
+});
+
+app.patch('/api/admin/incidents/:id/resolve', (req, res) => {
+  /* #swagger.tags = ['Admin - Incidents'] */
+  /* #swagger.summary = 'Resolve manualmente um incidente' */
+  /* #swagger.description = 'Marca um incidente aberto como RESOLVED e preenche resolvedAt. Esta é uma ação administrativa controlada; incidentes continuam sendo criados automaticamente pelo IncidentService.' */
+  /* #swagger.security = [{ bearerAuth: [] }] */
+  /* #swagger.parameters['id'] = { in: 'path', required: true, description: 'ID do incidente.', schema: { type: 'string' } } */
+  /* #swagger.responses[200] = { description: 'Incidente resolvido com sucesso.' } */
+  /* #swagger.responses[400] = { description: 'Incidente já está resolvido.' } */
+  /* #swagger.responses[401] = { description: 'Token ausente ou inválido.' } */
+  /* #swagger.responses[403] = { description: 'Acesso negado. Requer perfil ADMIN.' } */
+  /* #swagger.responses[404] = { description: 'Incidente não encontrado.' } */
+  /* #swagger.responses[500] = { description: 'Erro interno do servidor.' } */
+  res.status(200).json({
+    id: 'incident-id',
+    monitorId: 'monitor-id',
+    status: 'RESOLVED',
+    resolvedAt: '2026-05-24T00:30:00.000Z',
+  });
+});
+
+app.patch('/api/admin/incidents/:id/reopen', (req, res) => {
+  /* #swagger.tags = ['Admin - Incidents'] */
+  /* #swagger.summary = 'Reabre manualmente um incidente' */
+  /* #swagger.description = 'Marca um incidente resolvido como OPEN e limpa resolvedAt. Esta é uma ação administrativa controlada para manutenção operacional.' */
+  /* #swagger.security = [{ bearerAuth: [] }] */
+  /* #swagger.parameters['id'] = { in: 'path', required: true, description: 'ID do incidente.', schema: { type: 'string' } } */
+  /* #swagger.responses[200] = { description: 'Incidente reaberto com sucesso.' } */
+  /* #swagger.responses[400] = { description: 'Incidente já está aberto.' } */
+  /* #swagger.responses[401] = { description: 'Token ausente ou inválido.' } */
+  /* #swagger.responses[403] = { description: 'Acesso negado. Requer perfil ADMIN.' } */
+  /* #swagger.responses[404] = { description: 'Incidente não encontrado.' } */
+  /* #swagger.responses[500] = { description: 'Erro interno do servidor.' } */
+  res.status(200).json({
+    id: 'incident-id',
+    monitorId: 'monitor-id',
+    status: 'OPEN',
+    resolvedAt: null,
+  });
+});
+
+app.delete('/api/admin/incidents/:id', (req, res) => {
+  /* #swagger.tags = ['Admin - Incidents'] */
+  /* #swagger.summary = 'Remove um incidente operacional' */
+  /* #swagger.description = 'Remove um incidente por ação administrativa. Uso recomendado apenas para manutenção controlada de histórico operacional.' */
+  /* #swagger.security = [{ bearerAuth: [] }] */
+  /* #swagger.parameters['id'] = { in: 'path', required: true, description: 'ID do incidente.', schema: { type: 'string' } } */
+  /* #swagger.responses[204] = { description: 'Incidente removido com sucesso.' } */
+  /* #swagger.responses[401] = { description: 'Token ausente ou inválido.' } */
+  /* #swagger.responses[403] = { description: 'Acesso negado. Requer perfil ADMIN.' } */
+  /* #swagger.responses[404] = { description: 'Incidente não encontrado.' } */
+  /* #swagger.responses[500] = { description: 'Erro interno do servidor.' } */
+  res.status(204).send();
+});
+
+app.get('/api/admin/alerts', (req, res) => {
+  /* #swagger.tags = ['Admin - Alerts'] */
+  /* #swagger.summary = 'Lista alertas operacionais' */
+  /* #swagger.description = 'Retorna alertas gerados automaticamente pelo AlertService. Requer perfil ADMIN. Permite filtros opcionais por monitorId, incidentId e type.' */
+  /* #swagger.security = [{ bearerAuth: [] }] */
+  /* #swagger.parameters['monitorId'] = { in: 'query', required: false, description: 'Filtra alertas por monitor.', schema: { type: 'string' } } */
+  /* #swagger.parameters['incidentId'] = { in: 'query', required: false, description: 'Filtra alertas por incidente.', schema: { type: 'string' } } */
+  /* #swagger.parameters['type'] = { in: 'query', required: false, description: 'Filtra alertas por tipo.', schema: { type: 'string', example: 'EMAIL' } } */
+  /* #swagger.responses[200] = { description: 'Lista de alertas retornada com sucesso.' } */
+  /* #swagger.responses[401] = { description: 'Token ausente ou inválido.' } */
+  /* #swagger.responses[403] = { description: 'Acesso negado. Requer perfil ADMIN.' } */
+  /* #swagger.responses[500] = { description: 'Erro interno do servidor.' } */
+  res.status(200).json([]);
+});
+
+app.get('/api/admin/alerts/:id', (req, res) => {
+  /* #swagger.tags = ['Admin - Alerts'] */
+  /* #swagger.summary = 'Busca um alerta operacional pelo ID' */
+  /* #swagger.description = 'Retorna os detalhes de um alerta, incluindo monitor e incidente relacionados. Requer perfil ADMIN.' */
+  /* #swagger.security = [{ bearerAuth: [] }] */
+  /* #swagger.parameters['id'] = { in: 'path', required: true, description: 'ID do alerta.', schema: { type: 'string' } } */
+  /* #swagger.responses[200] = { description: 'Alerta encontrado com sucesso.' } */
+  /* #swagger.responses[401] = { description: 'Token ausente ou inválido.' } */
+  /* #swagger.responses[403] = { description: 'Acesso negado. Requer perfil ADMIN.' } */
+  /* #swagger.responses[404] = { description: 'Alerta não encontrado.' } */
+  /* #swagger.responses[500] = { description: 'Erro interno do servidor.' } */
+  res.status(200).json({
+    id: 'alert-id',
+    monitorId: 'monitor-id',
+    incidentId: 'incident-id',
+    type: 'EMAIL',
+    message: '[ALERTA CRÍTICO] Monitor caiu',
+    sentAt: '2026-05-24T00:20:00.924Z',
+  });
+});
+
+app.delete('/api/admin/alerts/:id', (req, res) => {
+  /* #swagger.tags = ['Admin - Alerts'] */
+  /* #swagger.summary = 'Remove um alerta operacional' */
+  /* #swagger.description = 'Remove um alerta por ação administrativa. Uso recomendado apenas para limpeza controlada de histórico operacional.' */
+  /* #swagger.security = [{ bearerAuth: [] }] */
+  /* #swagger.parameters['id'] = { in: 'path', required: true, description: 'ID do alerta.', schema: { type: 'string' } } */
+  /* #swagger.responses[204] = { description: 'Alerta removido com sucesso.' } */
+  /* #swagger.responses[401] = { description: 'Token ausente ou inválido.' } */
+  /* #swagger.responses[403] = { description: 'Acesso negado. Requer perfil ADMIN.' } */
+  /* #swagger.responses[404] = { description: 'Alerta não encontrado.' } */
+  /* #swagger.responses[500] = { description: 'Erro interno do servidor.' } */
+  res.status(204).send();
+});
+
+app.get('/api/admin/check-executions', (req, res) => {
+  /* #swagger.tags = ['Admin - Check Executions'] */
+  /* #swagger.summary = 'Lista execuções de checagem' */
+  /* #swagger.description = 'Retorna execuções de checagem geradas automaticamente pelo fluxo de monitoramento. Requer perfil ADMIN. Permite filtros opcionais por monitorId e statusCode.' */
+  /* #swagger.security = [{ bearerAuth: [] }] */
+  /* #swagger.parameters['monitorId'] = { in: 'query', required: false, description: 'Filtra execuções por monitor.', schema: { type: 'string' } } */
+  /* #swagger.parameters['statusCode'] = { in: 'query', required: false, description: 'Filtra execuções por código HTTP.', schema: { type: 'integer', example: 500 } } */
+  /* #swagger.responses[200] = { description: 'Lista de execuções retornada com sucesso.' } */
+  /* #swagger.responses[400] = { description: 'Código de status inválido.' } */
+  /* #swagger.responses[401] = { description: 'Token ausente ou inválido.' } */
+  /* #swagger.responses[403] = { description: 'Acesso negado. Requer perfil ADMIN.' } */
+  /* #swagger.responses[500] = { description: 'Erro interno do servidor.' } */
+  res.status(200).json([]);
+});
+
+app.get('/api/admin/check-executions/:id', (req, res) => {
+  /* #swagger.tags = ['Admin - Check Executions'] */
+  /* #swagger.summary = 'Busca uma execução de checagem pelo ID' */
+  /* #swagger.description = 'Retorna os detalhes de uma execução de checagem, incluindo o monitor relacionado. Requer perfil ADMIN.' */
+  /* #swagger.security = [{ bearerAuth: [] }] */
+  /* #swagger.parameters['id'] = { in: 'path', required: true, description: 'ID da execução de checagem.', schema: { type: 'string' } } */
+  /* #swagger.responses[200] = { description: 'Execução encontrada com sucesso.' } */
+  /* #swagger.responses[401] = { description: 'Token ausente ou inválido.' } */
+  /* #swagger.responses[403] = { description: 'Acesso negado. Requer perfil ADMIN.' } */
+  /* #swagger.responses[404] = { description: 'Execução de checagem não encontrada.' } */
+  /* #swagger.responses[500] = { description: 'Erro interno do servidor.' } */
+  res.status(200).json({
+    id: 'execution-id',
+    monitorId: 'monitor-id',
+    status_code: 500,
+    response_time_ms: 350,
+    timestamp: '2026-05-24T00:20:00.881Z',
+  });
+});
+
+app.delete('/api/admin/check-executions/:id', (req, res) => {
+  /* #swagger.tags = ['Admin - Check Executions'] */
+  /* #swagger.summary = 'Remove uma execução de checagem' */
+  /* #swagger.description = 'Remove uma execução de checagem por ação administrativa. Uso recomendado apenas para limpeza controlada de histórico operacional.' */
+  /* #swagger.security = [{ bearerAuth: [] }] */
+  /* #swagger.parameters['id'] = { in: 'path', required: true, description: 'ID da execução de checagem.', schema: { type: 'string' } } */
+  /* #swagger.responses[204] = { description: 'Execução removida com sucesso.' } */
+  /* #swagger.responses[401] = { description: 'Token ausente ou inválido.' } */
+  /* #swagger.responses[403] = { description: 'Acesso negado. Requer perfil ADMIN.' } */
+  /* #swagger.responses[404] = { description: 'Execução de checagem não encontrada.' } */
+  /* #swagger.responses[500] = { description: 'Erro interno do servidor.' } */
+  res.status(204).send();
 });
 
 export default app;

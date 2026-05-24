@@ -28,7 +28,20 @@ const doc = {
     { name: 'Auth', description: 'Autenticação e recuperação de senha' },
     { name: 'Users', description: 'Gerenciamento de usuários' },
     { name: 'Monitors', description: 'Gerenciamento de monitores' },
-    { name: 'Admin', description: 'Operações administrativas' },
+    { name: 'Admin', description: 'Métricas e operações administrativas gerais' },
+    {
+      name: 'Admin - Incidents',
+      description: 'Consulta e manutenção controlada de incidentes operacionais',
+    },
+    {
+      name: 'Admin - Alerts',
+      description: 'Consulta e limpeza administrativa de alertas operacionais',
+    },
+    {
+      name: 'Admin - Check Executions',
+      description: 'Consulta e limpeza administrativa do histórico de checagens',
+    },
+    ,
   ],
   components: {
     securitySchemes: {
