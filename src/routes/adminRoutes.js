@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import prisma from '../config/database.js';
 import AdminAlertController from '../controllers/AdminAlertController.js';
+import AdminCheckExecutionController from '../controllers/AdminCheckExecutionController.js';
 import AdminIncidentController from '../controllers/AdminIncidentController.js';
 import authMiddleware from '../middlewares/auth.js';
 import isAdmin from '../middlewares/isAdmin.js';
@@ -43,5 +44,11 @@ routes.delete('/incidents/:id', AdminIncidentController.delete);
 routes.get('/alerts', AdminAlertController.index);
 routes.get('/alerts/:id', AdminAlertController.show);
 routes.delete('/alerts/:id', AdminAlertController.delete);
+
+// Endpoints administrativos para auditoria e limpeza de execuções.
+// Execuções continuam sendo criadas automaticamente pelo IncidentService.
+routes.get('/check-executions', AdminCheckExecutionController.index);
+routes.get('/check-executions/:id', AdminCheckExecutionController.show);
+routes.delete('/check-executions/:id', AdminCheckExecutionController.delete);
 
 export default routes;
