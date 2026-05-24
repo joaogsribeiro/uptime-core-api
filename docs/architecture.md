@@ -1,8 +1,8 @@
 # 🏗️ **Arquitetura**
 
-Este documento descreve a arquitetura da UptimeCore API, sua organização interna, responsabilidades das camadas, fluxo principal da aplicação e modelo de dados.
+Este documento descreve a arquitetura da UptimeCore API, sua organização interna, responsabilidades das camadas, fluxo principal da aplicação, modelo de dados e decisões de domínio.
 
-A UptimeCore API é uma aplicação backend construída com Node.js, Express, Prisma e PostgreSQL. O projeto segue uma arquitetura em camadas, com separação entre configuração da aplicação, rotas HTTP, middlewares, controllers, services e persistência.
+A UptimeCore API é uma aplicação backend construída com **Node.js**, **Express**, **Prisma** e **PostgreSQL**. O projeto segue uma arquitetura em camadas, com separação entre configuração da aplicação, rotas HTTP, middlewares, controllers, services e persistência.
 
 ## 🌐 **Visão Geral**
 
@@ -34,17 +34,17 @@ O projeto utiliza uma arquitetura em camadas simples e objetiva, adequada para u
 
 As principais camadas são:
 
-| Camada        | Responsabilidade                                                                    |
-| ------------- | ----------------------------------------------------------------------------------- |
-| `app`         | Configuração da aplicação Express, middlewares globais, rotas e tratamento de erros |
-| `server`      | Inicialização do servidor HTTP e serviços em background                             |
-| `routes`      | Declaração dos endpoints e associação com controllers                               |
-| `middlewares` | Interceptação de requisições para autenticação, autorização e erros                 |
-| `controllers` | Entrada HTTP, validações básicas, chamadas de domínio e formatação de resposta      |
-| `services`    | Regras operacionais e integrações auxiliares                                        |
-| `config`      | Configurações de infraestrutura, banco, e-mail e Swagger                            |
-| `prisma`      | Schema, migrations e acesso ao banco de dados                                       |
-| `tests`       | Testes de integração da API                                                         |
+| Camada | Responsabilidade |
+|---|---|
+| `app` | Configuração da aplicação Express, middlewares globais, rotas e tratamento de erros |
+| `server` | Inicialização do servidor HTTP e serviços em background |
+| `routes` | Declaração dos endpoints e associação com controllers |
+| `middlewares` | Interceptação de requisições para autenticação, autorização e erros |
+| `controllers` | Entrada HTTP, validações básicas, chamadas de domínio e formatação de resposta |
+| `services` | Regras operacionais, monitoramento e integrações auxiliares |
+| `config` | Configurações de infraestrutura, banco, e-mail e Swagger |
+| `prisma` | Schema, migrations e acesso ao banco de dados |
+| `tests` | Testes de integração da API |
 
 ## 🔄 **Fluxo de Requisição HTTP**
 
@@ -94,16 +94,45 @@ flowchart TD
     Target --> Result[Resultado da checagem]
     Result --> Execution[Registra CheckExecution]
     Result --> Incident[Cria ou resolve Incident]
-    Incident --> Alert[Registra ou envia Alert]
+    Incident --> Alert[Registra Alert]
     Alert --> Mail[Nodemailer / SMTP]
 ```
 
 Responsabilidades principais:
 
-* `SchedulerService`: inicia o processo periódico de checagem.
-* `PingService`: executa chamadas HTTP para as URLs monitoradas.
-* `IncidentService`: gerencia abertura e resolução de incidentes.
-* `AlertService`: registra e envia alertas relacionados a incidentes.
+- `SchedulerService`: inicia o processo periódico de checagem.
+- `PingService`: executa chamadas HTTP para as URLs monitoradas.
+- `IncidentService`: registra execuções, abre incidentes e resolve incidentes.
+- `AlertService`: registra alertas relacionados a incidentes e simula/envia notificações.
+
+## 🧭 **Fluxo Administrativo Operacional**
+
+Além das rotas de domínio usadas por usuários comuns, a API possui endpoints administrativos para auditoria e manutenção controlada das entidades operacionais.
+
+Essas rotas ficam sob `/api/admin` e exigem:
+
+- Token JWT válido.
+- Perfil `ADMIN`.
+
+```mermaid
+flowchart TD
+    Admin[Administrador] --> AdminRoutes["/api/admin"]
+    AdminRoutes --> Auth[authMiddleware]
+    Auth --> Role[isAdmin]
+    Role --> AdminControllers[Controllers Administrativos]
+
+    AdminControllers --> Incidents[Incidents]
+    AdminControllers --> Alerts[Alerts]
+    AdminControllers --> Executions[CheckExecutions]
+
+    Incidents --> Prisma[Prisma Client]
+    Alerts --> Prisma
+    Executions --> Prisma
+
+    Prisma --> Database[(PostgreSQL)]
+```
+
+Esses endpoints não substituem os services. Eles existem para consulta, auditoria, suporte e manutenção controlada do histórico operacional.
 
 ## 🔐 **Autenticação e Autorização**
 
@@ -137,10 +166,10 @@ As rotas protegidas utilizam o middleware de autenticação para extrair e valid
 
 ### **Níveis de acesso**
 
-| Perfil  | Permissões                                                                   |
-| ------- | ---------------------------------------------------------------------------- |
-| `USER`  | Gerenciar o próprio perfil e seus próprios monitores                         |
-| `ADMIN` | Acessar rotas administrativas e visualizar recursos com permissões ampliadas |
+| Perfil | Permissões |
+|---|---|
+| `USER` | Gerenciar o próprio perfil e seus próprios monitores |
+| `ADMIN` | Acessar rotas administrativas e visualizar/manter recursos operacionais |
 
 ## 📁 **Organização dos Arquivos**
 
@@ -153,6 +182,9 @@ src/
 │   ├── mail.js
 │   └── swagger.js
 ├── controllers/
+│   ├── AdminAlertController.js
+│   ├── AdminCheckExecutionController.js
+│   ├── AdminIncidentController.js
 │   ├── MonitorController.js
 │   ├── PasswordController.js
 │   ├── SessionController.js
@@ -185,16 +217,16 @@ Responsável pela configuração principal da aplicação Express.
 
 Inclui:
 
-* Inicialização do Express.
-* Configuração de CORS.
-* Parsing de JSON.
-* Remoção do header `X-Powered-By`.
-* Exposição do Swagger em `/api/docs`.
-* Rotas de apresentação da API.
-* Health check.
-* Registro dos grupos de rotas.
-* Tratamento de rota não encontrada.
-* Middleware global de erros.
+- Inicialização do Express.
+- Configuração de CORS.
+- Parsing de JSON.
+- Remoção do header `X-Powered-By`.
+- Exposição do Swagger em `/api/docs`.
+- Rotas de apresentação da API.
+- Health check.
+- Registro dos grupos de rotas.
+- Tratamento de rota não encontrada.
+- Middleware global de erros.
 
 ### **`src/server.js`**
 
@@ -206,12 +238,12 @@ Também inicializa o motor de monitoramento por meio do `SchedulerService`.
 
 Contém a definição dos grupos de rotas.
 
-| Arquivo            | Base path       | Responsabilidade                       |
-| ------------------ | --------------- | -------------------------------------- |
-| `authRoutes.js`    | `/api/auth`     | Registro, login e recuperação de senha |
-| `userRoutes.js`    | `/api/users`    | Operações de usuário                   |
-| `monitorRoutes.js` | `/api/monitors` | Operações de monitores                 |
-| `adminRoutes.js`   | `/api/admin`    | Rotas administrativas                  |
+| Arquivo | Base path | Responsabilidade |
+|---|---|---|
+| `authRoutes.js` | `/api/auth` | Registro, login e recuperação de senha |
+| `userRoutes.js` | `/api/users` | Operações de usuário |
+| `monitorRoutes.js` | `/api/monitors` | Operações de monitores |
+| `adminRoutes.js` | `/api/admin` | Métricas, auditoria e manutenção administrativa |
 
 ### **`src/controllers`**
 
@@ -219,42 +251,50 @@ Controllers recebem as requisições HTTP e coordenam as ações necessárias.
 
 Eles são responsáveis por:
 
-* Ler parâmetros, query strings e body.
-* Aplicar validações básicas.
-* Chamar Prisma ou services.
-* Retornar respostas HTTP adequadas.
-* Garantir que dados sensíveis não sejam expostos.
+- Ler parâmetros, query strings e body.
+- Aplicar validações básicas.
+- Chamar Prisma ou services.
+- Retornar respostas HTTP adequadas.
+- Garantir que dados sensíveis não sejam expostos.
+
+Controllers administrativos adicionados:
+
+| Controller | Responsabilidade |
+|---|---|
+| `AdminIncidentController.js` | Consulta, resolução, reabertura e remoção controlada de incidentes |
+| `AdminAlertController.js` | Consulta e remoção controlada de alertas |
+| `AdminCheckExecutionController.js` | Consulta e remoção controlada de execuções de checagem |
 
 ### **`src/middlewares`**
 
 Middlewares interceptam requisições antes dos controllers.
 
-| Middleware           | Responsabilidade                                            |
-| -------------------- | ----------------------------------------------------------- |
-| `auth.js`            | Validar JWT e anexar dados do usuário à requisição          |
-| `isAdmin.js`         | Garantir que apenas administradores acessem rotas restritas |
-| `errorMiddleware.js` | Padronizar respostas de erro                                |
+| Middleware | Responsabilidade |
+|---|---|
+| `auth.js` | Validar JWT e anexar dados do usuário à requisição |
+| `isAdmin.js` | Garantir que apenas administradores acessem rotas restritas |
+| `errorMiddleware.js` | Padronizar respostas de erro |
 
 ### **`src/services`**
 
 Services encapsulam operações auxiliares e lógicas que não pertencem diretamente ao ciclo HTTP.
 
-| Service               | Responsabilidade                             |
-| --------------------- | -------------------------------------------- |
-| `SchedulerService.js` | Agendar e coordenar checagens periódicas     |
-| `PingService.js`      | Executar chamadas HTTP para URLs monitoradas |
-| `IncidentService.js`  | Gerenciar incidentes abertos e resolvidos    |
-| `AlertService.js`     | Gerenciar alertas e envio de notificações    |
+| Service | Responsabilidade |
+|---|---|
+| `SchedulerService.js` | Agendar e coordenar checagens periódicas |
+| `PingService.js` | Executar chamadas HTTP para URLs monitoradas |
+| `IncidentService.js` | Registrar execuções, abrir incidentes e resolver incidentes |
+| `AlertService.js` | Gerenciar alertas e envio/simulação de notificações |
 
 ### **`src/config`**
 
 Centraliza configurações de infraestrutura.
 
-| Arquivo       | Responsabilidade                         |
-| ------------- | ---------------------------------------- |
-| `database.js` | Instancia e exporta o Prisma Client      |
-| `mail.js`     | Configura transporte SMTP com Nodemailer |
-| `swagger.js`  | Carrega a documentação Swagger gerada    |
+| Arquivo | Responsabilidade |
+|---|---|
+| `database.js` | Instancia e exporta o Prisma Client |
+| `mail.js` | Configura transporte SMTP com Nodemailer |
+| `swagger.js` | Carrega a documentação Swagger gerada |
 
 ### **`src/utils`**
 
@@ -262,7 +302,7 @@ Contém utilitários reutilizáveis.
 
 Atualmente inclui:
 
-* `AppError.js`: classe para representar erros operacionais da aplicação.
+- `AppError.js`: classe para representar erros operacionais da aplicação.
 
 ## 🗄️ **Modelo de Dados**
 
@@ -270,11 +310,11 @@ O banco de dados é modelado com Prisma e PostgreSQL.
 
 Entidades principais:
 
-* `User`
-* `Monitor`
-* `CheckExecution`
-* `Incident`
-* `Alert`
+- `User`
+- `Monitor`
+- `CheckExecution`
+- `Incident`
+- `Alert`
 
 ```mermaid
 erDiagram
@@ -342,19 +382,19 @@ Representa um usuário da aplicação.
 
 Campos principais:
 
-| Campo                  | Descrição                         |
-| ---------------------- | --------------------------------- |
-| `id`                   | Identificador único               |
-| `name`                 | Nome do usuário                   |
-| `email`                | E-mail único                      |
-| `password_hash`        | Hash da senha                     |
-| `role`                 | Perfil do usuário                 |
-| `passwordResetToken`   | Token temporário de recuperação   |
+| Campo | Descrição |
+|---|---|
+| `id` | Identificador único |
+| `name` | Nome do usuário |
+| `email` | E-mail único |
+| `password_hash` | Hash da senha |
+| `role` | Perfil do usuário |
+| `passwordResetToken` | Token temporário de recuperação |
 | `passwordResetExpires` | Expiração do token de recuperação |
 
 Relacionamentos:
 
-* Um usuário pode possuir vários monitores.
+- Um usuário pode possuir vários monitores.
 
 ### **Monitor**
 
@@ -362,21 +402,21 @@ Representa uma URL monitorada.
 
 Campos principais:
 
-| Campo              | Descrição                 |
-| ------------------ | ------------------------- |
-| `id`               | Identificador único       |
-| `userId`           | Dono do monitor           |
-| `name`             | Nome descritivo           |
-| `url`              | URL monitorada            |
+| Campo | Descrição |
+|---|---|
+| `id` | Identificador único |
+| `userId` | Dono do monitor |
+| `name` | Nome descritivo |
+| `url` | URL monitorada |
 | `interval_minutes` | Intervalo entre checagens |
-| `status`           | Estado do monitor         |
+| `status` | Estado do monitor |
 
 Relacionamentos:
 
-* Pertence a um usuário.
-* Possui várias execuções de checagem.
-* Pode possuir vários incidentes.
-* Pode gerar vários alertas.
+- Pertence a um usuário.
+- Possui várias execuções de checagem.
+- Pode possuir vários incidentes.
+- Pode gerar vários alertas.
 
 ### **CheckExecution**
 
@@ -384,17 +424,19 @@ Representa uma execução de checagem.
 
 Campos principais:
 
-| Campo              | Descrição                          |
-| ------------------ | ---------------------------------- |
-| `id`               | Identificador único                |
-| `monitorId`        | Monitor relacionado                |
-| `status_code`      | Código HTTP retornado              |
+| Campo | Descrição |
+|---|---|
+| `id` | Identificador único |
+| `monitorId` | Monitor relacionado |
+| `status_code` | Código HTTP retornado |
 | `response_time_ms` | Tempo de resposta em milissegundos |
-| `timestamp`        | Momento da checagem                |
+| `timestamp` | Momento da checagem |
 
 Observação:
 
-* Existe índice em `monitorId` e `timestamp` para otimizar consultas históricas por monitor.
+- Existe índice em `monitorId` e `timestamp` para otimizar consultas históricas por monitor.
+- É uma entidade operacional gerada automaticamente pelo fluxo de monitoramento.
+- Não deve ser criada ou editada manualmente por endpoint público.
 
 ### **Incident**
 
@@ -402,14 +444,20 @@ Representa uma falha detectada em um monitor.
 
 Campos principais:
 
-| Campo        | Descrição              |
-| ------------ | ---------------------- |
-| `id`         | Identificador único    |
-| `monitorId`  | Monitor relacionado    |
-| `status`     | Estado do incidente    |
-| `errorLog`   | Detalhes da falha      |
-| `startedAt`  | Início do incidente    |
+| Campo | Descrição |
+|---|---|
+| `id` | Identificador único |
+| `monitorId` | Monitor relacionado |
+| `status` | Estado do incidente |
+| `errorLog` | Detalhes da falha |
+| `startedAt` | Início do incidente |
 | `resolvedAt` | Resolução do incidente |
+
+Observação:
+
+- É criado automaticamente quando um monitor falha.
+- É resolvido automaticamente quando o monitor volta a responder.
+- Também pode ser resolvido ou reaberto por ação administrativa controlada.
 
 ### **Alert**
 
@@ -417,14 +465,20 @@ Representa uma notificação associada a um monitor ou incidente.
 
 Campos principais:
 
-| Campo        | Descrição                             |
-| ------------ | ------------------------------------- |
-| `id`         | Identificador único                   |
-| `monitorId`  | Monitor relacionado                   |
+| Campo | Descrição |
+|---|---|
+| `id` | Identificador único |
+| `monitorId` | Monitor relacionado |
 | `incidentId` | Incidente relacionado, quando existir |
-| `type`       | Tipo do alerta                        |
-| `message`    | Mensagem enviada                      |
-| `sentAt`     | Data de envio                         |
+| `type` | Tipo do alerta |
+| `message` | Mensagem enviada |
+| `sentAt` | Data de envio |
+
+Observação:
+
+- É criado automaticamente pelo `AlertService`.
+- Representa histórico operacional de notificações.
+- Não possui criação ou edição manual via endpoint.
 
 ## 📚 **Enums**
 
@@ -457,10 +511,10 @@ A aplicação Express fica isolada em `app.js`, enquanto a inicialização do se
 
 Isso facilita:
 
-* Testes de integração sem abrir porta HTTP manualmente.
-* Reuso do app em Supertest.
-* Inicialização controlada de serviços em background.
-* Separação entre configuração da aplicação e execução do processo.
+- Testes de integração sem abrir porta HTTP manualmente.
+- Reuso do app em Supertest.
+- Inicialização controlada de serviços em background.
+- Separação entre configuração da aplicação e execução do processo.
 
 ### **Swagger gerado antes do runtime**
 
@@ -468,18 +522,18 @@ A documentação Swagger é gerada por script e carregada no runtime.
 
 Benefícios:
 
-* Evita geração dinâmica a cada inicialização.
-* Reduz complexidade em produção.
-* Garante que o build já contenha a documentação necessária.
+- Evita geração dinâmica a cada inicialização.
+- Reduz complexidade em produção.
+- Garante que o build já contenha a documentação necessária.
 
 ### **Prisma como camada de persistência**
 
 O Prisma centraliza:
 
-* Modelagem do banco.
-* Migrations.
-* Tipagem e estrutura das consultas.
-* Acesso padronizado ao PostgreSQL.
+- Modelagem do banco.
+- Migrations.
+- Tipagem e estrutura das consultas.
+- Acesso padronizado ao PostgreSQL.
 
 ### **Services para tarefas operacionais**
 
@@ -487,22 +541,74 @@ A lógica de monitoramento, ping, incidentes e alertas fica em `services`, separ
 
 Isso evita que controllers fiquem responsáveis por tarefas de background ou integração externa.
 
+### **Entidades operacionais sem CRUD genérico**
+
+`CheckExecution`, `Incident` e `Alert` são entidades operacionais. Elas representam fatos gerados pelo sistema, não cadastros livres manipulados diretamente por usuários.
+
+Por isso, a API não expõe CRUD genérico para essas entidades.
+
+A decisão preserva:
+
+- Integridade do histórico operacional.
+- Rastreabilidade de falhas.
+- Coerência entre checagens, incidentes e alertas.
+- Separação entre ações humanas e eventos gerados pelo monitoramento.
+
+Em vez de criação e edição manual genérica, a API expõe endpoints administrativos controlados:
+
+| Entidade | Endpoints administrativos |
+|---|---|
+| `Incident` | Listar, buscar, resolver, reabrir e remover |
+| `Alert` | Listar, buscar e remover |
+| `CheckExecution` | Listar, buscar e remover |
+
+Essa abordagem atende ao objetivo de manutenção e auditoria sem comprometer o modelo de domínio.
+
+## 🧪 **Testes de Integração**
+
+A API possui testes de integração com Jest e Supertest.
+
+Além dos testes de autenticação, usuários, monitores e regras de incidentes, há testes específicos para os endpoints administrativos operacionais:
+
+```text
+tests/integration/adminIncident.test.js
+tests/integration/adminAlert.test.js
+tests/integration/adminCheckExecution.test.js
+```
+
+Esses testes validam:
+
+- Bloqueio sem token.
+- Bloqueio para usuário comum.
+- Acesso com perfil `ADMIN`.
+- Listagem e busca por ID.
+- Filtros operacionais.
+- Ações controladas de incidentes.
+- Remoção administrativa.
+
 ## 🚀 **Pontos de Extensão**
 
 A arquitetura atual permite evoluções como:
 
-* Adição de refresh token.
-* Rate limiting.
-* Logs estruturados.
-* Métricas com Prometheus.
-* Filas para checagens assíncronas.
-* Notificações por webhook, Slack ou Discord.
-* Dashboard com histórico de uptime.
-* Multi-tenancy.
-* Separação entre worker de monitoramento e API HTTP.
+- Adição de refresh token.
+- Rate limiting.
+- Logs estruturados.
+- Métricas com Prometheus.
+- Filas para checagens assíncronas.
+- Notificações por webhook, Slack ou Discord.
+- Dashboard com histórico de uptime.
+- Multi-tenancy.
+- Separação entre worker de monitoramento e API HTTP.
+- Auditoria detalhada para ações administrativas.
+- Registro de motivo para resolução/reabertura manual de incidentes.
 
 ## 📝 **Considerações**
 
 A arquitetura atual é adequada para um MVP backend robusto, com boa separação de responsabilidades e base preparada para evolução.
+
+O ponto mais importante do desenho é separar claramente:
+
+- **Entidades gerenciáveis pelo usuário**, como `User` e `Monitor`.
+- **Entidades operacionais geradas pelo sistema**, como `CheckExecution`, `Incident` e `Alert`.
 
 Para cargas maiores, o principal ponto de evolução seria separar o processo de monitoramento em um worker independente, usando fila ou scheduler externo. Isso permitiria escalar a API HTTP e o motor de checagens de forma separada.

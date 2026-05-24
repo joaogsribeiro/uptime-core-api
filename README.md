@@ -1,4 +1,6 @@
-# 🚀 **UptimeCore API**
+<div align="center">
+
+# 📡 **UptimeCore API**
 
 ![Node.js](https://img.shields.io/badge/Node.js-24-green)
 ![Express](https://img.shields.io/badge/Express-5.2-lightgrey)
@@ -7,7 +9,9 @@
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-API RESTful para monitoramento de disponibilidade de serviços e URLs, com autenticação JWT, checagens periódicas, registro de incidentes, alertas por e-mail, documentação Swagger, testes automatizados e deploy conteinerizado.
+API RESTful para monitoramento de disponibilidade de serviços e URLs, com autenticação JWT, checagens periódicas, registro de incidentes, alertas operacionais, documentação Swagger, testes automatizados e deploy conteinerizado.
+
+</div>
 
 A **UptimeCore API** permite cadastrar endpoints HTTP, monitorar disponibilidade, registrar falhas e manter histórico operacional de uptime e tempo de resposta.
 
@@ -15,45 +19,49 @@ A **UptimeCore API** permite cadastrar endpoints HTTP, monitorar disponibilidade
 
 # 🌐 **Produção**
 
-* API: [https://uptime-core-api.onrender.com/api](https://uptime-core-api.onrender.com/api)
-* Swagger: [https://uptime-core-api.onrender.com/api/docs](https://uptime-core-api.onrender.com/api/docs)
+- API: [https://uptime-core-api.onrender.com/api](https://uptime-core-api.onrender.com/api)
+- Swagger: [https://uptime-core-api.onrender.com/api/docs](https://uptime-core-api.onrender.com/api/docs)
 
 ---
 
 # 📚 **Sumário**
 
-* [Funcionalidades](#-funcionalidades)
-* [Stack Tecnológica](#️-stack-tecnológica)
-* [Quick Start](#-quick-start)
-* [Variáveis de Ambiente](#-variáveis-de-ambiente)
-* [Documentação](#-documentação)
-* [Visão Geral da API](#-visão-geral-da-api)
-* [Scripts Disponíveis](#-scripts-disponíveis)
-* [Estrutura do Projeto](#-estrutura-do-projeto)
-* [Roadmap](#️-roadmap)
-* [Contribuição](#-contribuição)
-* [Licença](#-licença)
+- [Funcionalidades](#-funcionalidades)
+- [Stack Tecnológica](#️-stack-tecnológica)
+- [Quick Start](#-quick-start)
+- [Executando com Docker](#-executando-com-docker)
+- [Variáveis de Ambiente](#-variáveis-de-ambiente)
+- [Documentação](#-documentação)
+- [Visão Geral da API](#-visão-geral-da-api)
+- [Scripts Disponíveis](#-scripts-disponíveis)
+- [Estrutura do Projeto](#-estrutura-do-projeto)
+- [Testes](#-testes)
+- [CI/CD](#️-cicd)
+- [Roadmap](#️-roadmap)
+- [Contribuição](#-contribuição)
+- [Licença](#-licença)
 
 ---
 
 # ✨ **Funcionalidades**
 
-* Cadastro e autenticação de usuários com JWT.
-* Senhas protegidas com hash usando bcrypt.
-* Recuperação de senha via token enviado por e-mail.
-* Controle de acesso por usuário autenticado e perfil administrativo.
-* CRUD de usuários com regras de autorização.
-* CRUD de monitores HTTP.
-* Validação de URL na criação e atualização de monitores.
-* Execução periódica de checagens de disponibilidade.
-* Registro de tempo de resposta em milissegundos.
-* Registro de incidentes associados a monitores.
-* Registro de alertas vinculados a incidentes.
-* Health check para infraestrutura.
-* Documentação interativa com Swagger UI.
-* Testes de integração com Jest e Supertest.
-* Ambiente conteinerizado com Docker e Docker Compose.
-* Pipeline CI/CD com GitHub Actions, SonarCloud e deploy na Render.
+- Cadastro e autenticação de usuários com JWT.
+- Senhas protegidas com hash usando bcrypt.
+- Recuperação de senha via token enviado por e-mail.
+- Controle de acesso por usuário autenticado e perfil administrativo.
+- CRUD de usuários com regras de autorização.
+- CRUD de monitores HTTP.
+- Validação de URL na criação e atualização de monitores.
+- Execução periódica de checagens de disponibilidade.
+- Registro de tempo de resposta em milissegundos.
+- Registro automático de incidentes associados a monitores.
+- Registro automático de alertas vinculados a incidentes.
+- Endpoints administrativos para auditoria e manutenção operacional.
+- Health check para infraestrutura.
+- Documentação interativa com Swagger UI.
+- Testes de integração com Jest e Supertest.
+- Ambiente conteinerizado com Docker e Docker Compose.
+- Pipeline CI/CD com GitHub Actions, SonarCloud e deploy na Render.
 
 ---
 
@@ -61,40 +69,40 @@ A **UptimeCore API** permite cadastrar endpoints HTTP, monitorar disponibilidade
 
 ## 🔙 Backend
 
-* Node.js 24
-* Express 5
-* ECMAScript Modules
-* JWT
-* bcryptjs
-* Nodemailer
-* node-cron
-* Axios
+- Node.js 24
+- Express 5
+- ECMAScript Modules
+- JWT
+- bcryptjs
+- Nodemailer
+- node-cron
+- Axios
 
 ## 🗄️ Banco de Dados
 
-* PostgreSQL 15
-* Prisma ORM
-* Prisma Migrate
+- PostgreSQL 15
+- Prisma ORM
+- Prisma Migrate
 
 ## 📖 Documentação e Testes
 
-* Swagger UI Express
-* swagger-autogen
-* Jest
-* Supertest
-* Insomnia Collection
+- Swagger UI Express
+- swagger-autogen
+- Jest
+- Supertest
+- Insomnia Collection
 
-## 🚀 DevOps e Qualidade
+## ⚙️ DevOps e Qualidade
 
-* Docker
-* Docker Compose
-* GitHub Actions
-* ESLint
-* Prettier
-* Husky
-* lint-staged
-* SonarCloud
-* Render
+- Docker
+- Docker Compose
+- GitHub Actions
+- ESLint
+- Prettier
+- Husky
+- lint-staged
+- SonarCloud
+- Render
 
 ---
 
@@ -171,10 +179,10 @@ docker compose down
 
 O ambiente Docker inicia:
 
-| Serviço         | Descrição                  | Porta  |
-| --------------- | -------------------------- | ------ |
-| `api`           | API Node.js/Express        | `3000` |
-| `postgres_db`   | Banco PostgreSQL principal | `5432` |
+| Serviço | Descrição | Porta |
+|---|---|---|
+| `api` | API Node.js/Express | `3000` |
+| `postgres_db` | Banco PostgreSQL principal | `5432` |
 | `postgres_test` | Banco PostgreSQL de testes | `5433` |
 
 ---
@@ -183,22 +191,22 @@ O ambiente Docker inicia:
 
 Crie um arquivo `.env` baseado no `.env.example`.
 
-| Variável          | Descrição                                        |
-| ----------------- | ------------------------------------------------ |
-| `PORT`            | Porta da API                                     |
-| `NODE_ENV`        | Ambiente de execução                             |
-| `JWT_SECRET`      | Segredo utilizado para assinar tokens JWT        |
-| `JWT_EXPIRES_IN`  | Tempo de expiração do JWT                        |
-| `DATABASE_URL`    | String de conexão PostgreSQL usada pelo Prisma   |
-| `DB_HOST`         | Host do PostgreSQL                               |
-| `DB_PORT`         | Porta do PostgreSQL                              |
-| `DB_USER`         | Usuário do PostgreSQL                            |
-| `DB_PASS`         | Senha do PostgreSQL                              |
-| `DB_NAME`         | Nome do banco PostgreSQL                         |
-| `MAIL_HOST`       | Host SMTP                                        |
-| `MAIL_PORT`       | Porta SMTP                                       |
-| `MAIL_USER`       | Usuário SMTP                                     |
-| `MAIL_PASS`       | Senha SMTP                                       |
+| Variável | Descrição |
+|---|---|
+| `PORT` | Porta da API |
+| `NODE_ENV` | Ambiente de execução |
+| `JWT_SECRET` | Segredo utilizado para assinar tokens JWT |
+| `JWT_EXPIRES_IN` | Tempo de expiração do JWT |
+| `DATABASE_URL` | String de conexão PostgreSQL usada pelo Prisma |
+| `DB_HOST` | Host do PostgreSQL |
+| `DB_PORT` | Porta do PostgreSQL |
+| `DB_USER` | Usuário do PostgreSQL |
+| `DB_PASS` | Senha do PostgreSQL |
+| `DB_NAME` | Nome do banco PostgreSQL |
+| `MAIL_HOST` | Host SMTP |
+| `MAIL_PORT` | Porta SMTP |
+| `MAIL_USER` | Usuário SMTP |
+| `MAIL_PASS` | Senha SMTP |
 | `ALLOWED_ORIGINS` | Origens permitidas no CORS separadas por vírgula |
 
 ## 📝 Exemplo
@@ -223,13 +231,13 @@ MAIL_PASS=mailtrap_password
 
 A documentação completa está organizada em `/docs`.
 
-| Documento                              | Descrição                                                                       |
-| -------------------------------------- | ------------------------------------------------------------------------------- |
-| [Architecture](./docs/architecture.md) | Arquitetura da aplicação, camadas, estrutura do projeto e modelo de banco       |
-| [API](./docs/api.md)                   | Endpoints, autenticação, Swagger, Insomnia e exemplos de requisição             |
-| [Services](./docs/services.md)         | Funcionamento do scheduler, pings, incidentes, alertas e fluxo de monitoramento |
-| [Development](./docs/development.md)   | Configuração local, ambiente, scripts, testes, lint e troubleshooting           |
-| [Operations](./docs/operations.md)     | Docker, deploy, CI/CD, segurança e observabilidade                              |
+| Documento | Descrição |
+|---|---|
+| [Architecture](./docs/architecture.md) | Arquitetura da aplicação, camadas, estrutura do projeto e modelo de banco |
+| [API](./docs/api.md) | Endpoints, autenticação, Swagger, Insomnia e exemplos de requisição |
+| [Services](./docs/services.md) | Funcionamento do scheduler, pings, incidentes, alertas e fluxo de monitoramento |
+| [Development](./docs/development.md) | Configuração local, ambiente, scripts, testes, lint e troubleshooting |
+| [Operations](./docs/operations.md) | Docker, deploy, CI/CD, segurança e observabilidade |
 
 ---
 
@@ -244,25 +252,45 @@ Produção:   https://uptime-core-api.onrender.com
 
 ## 📌 Principais Rotas
 
-| Método   | Rota                        | Auth  | Descrição                      |
-| -------- | --------------------------- | ----- | ------------------------------ |
-| `GET`    | `/`                         | Não   | Apresentação da API            |
-| `GET`    | `/api`                      | Não   | Apresentação da API            |
-| `GET`    | `/api/health`               | Não   | Health check                   |
-| `POST`   | `/api/auth/register`        | Não   | Registrar usuário              |
-| `POST`   | `/api/auth/login`           | Não   | Autenticar usuário             |
-| `POST`   | `/api/auth/forgot-password` | Não   | Solicitar recuperação de senha |
-| `POST`   | `/api/auth/reset-password`  | Não   | Redefinir senha                |
-| `GET`    | `/api/users`                | Admin | Listar usuários                |
-| `GET`    | `/api/users/:id`            | JWT   | Buscar usuário                 |
-| `PUT`    | `/api/users/:id`            | JWT   | Atualizar usuário              |
-| `DELETE` | `/api/users/:id`            | JWT   | Remover usuário                |
-| `POST`   | `/api/monitors`             | JWT   | Criar monitor                  |
-| `GET`    | `/api/monitors`             | JWT   | Listar monitores               |
-| `GET`    | `/api/monitors/:id`         | JWT   | Buscar monitor                 |
-| `PUT`    | `/api/monitors/:id`         | JWT   | Atualizar monitor              |
-| `DELETE` | `/api/monitors/:id`         | JWT   | Remover monitor                |
-| `GET`    | `/api/admin/status`         | Admin | Obter métricas do sistema      |
+| Método | Rota | Auth | Descrição |
+|---|---|---|---|
+| `GET` | `/` | Não | Apresentação da API |
+| `GET` | `/api` | Não | Apresentação da API |
+| `GET` | `/api/health` | Não | Health check |
+| `POST` | `/api/auth/register` | Não | Registrar usuário |
+| `POST` | `/api/auth/login` | Não | Autenticar usuário |
+| `POST` | `/api/auth/forgot-password` | Não | Solicitar recuperação de senha |
+| `POST` | `/api/auth/reset-password` | Não | Redefinir senha |
+| `GET` | `/api/users` | Admin | Listar usuários |
+| `GET` | `/api/users/:id` | JWT | Buscar usuário |
+| `PUT` | `/api/users/:id` | JWT | Atualizar usuário |
+| `DELETE` | `/api/users/:id` | JWT | Remover usuário |
+| `POST` | `/api/monitors` | JWT | Criar monitor |
+| `GET` | `/api/monitors` | JWT | Listar monitores |
+| `GET` | `/api/monitors/:id` | JWT | Buscar monitor |
+| `PUT` | `/api/monitors/:id` | JWT | Atualizar monitor |
+| `DELETE` | `/api/monitors/:id` | JWT | Remover monitor |
+| `GET` | `/api/admin/status` | Admin | Obter métricas do sistema |
+
+## 🛡️ Rotas Administrativas Operacionais
+
+As entidades `Incident`, `Alert` e `CheckExecution` são geradas automaticamente pelo fluxo de monitoramento. Por isso, a API não expõe CRUD genérico para elas.
+
+Em vez disso, existem endpoints administrativos para **consulta, auditoria e manutenção controlada**.
+
+| Método | Rota | Auth | Descrição |
+|---|---|---|---|
+| `GET` | `/api/admin/incidents` | Admin | Listar incidentes operacionais |
+| `GET` | `/api/admin/incidents/:id` | Admin | Buscar incidente operacional |
+| `PATCH` | `/api/admin/incidents/:id/resolve` | Admin | Resolver incidente |
+| `PATCH` | `/api/admin/incidents/:id/reopen` | Admin | Reabrir incidente |
+| `DELETE` | `/api/admin/incidents/:id` | Admin | Remover incidente |
+| `GET` | `/api/admin/alerts` | Admin | Listar alertas operacionais |
+| `GET` | `/api/admin/alerts/:id` | Admin | Buscar alerta operacional |
+| `DELETE` | `/api/admin/alerts/:id` | Admin | Remover alerta |
+| `GET` | `/api/admin/check-executions` | Admin | Listar execuções de checagem |
+| `GET` | `/api/admin/check-executions/:id` | Admin | Buscar execução de checagem |
+| `DELETE` | `/api/admin/check-executions/:id` | Admin | Remover execução de checagem |
 
 ---
 
@@ -310,17 +338,17 @@ curl -X POST http://localhost:3000/api/monitors \
 
 # 📜 **Scripts Disponíveis**
 
-| Script                  | Descrição                                 |
-| ----------------------- | ----------------------------------------- |
-| `npm run swagger`       | Gera documentação Swagger                 |
-| `npm run dev`           | Inicia a API em modo desenvolvimento      |
-| `npm start`             | Inicia a API em modo produção/local       |
-| `npm run lint`          | Executa ESLint                            |
-| `npm run lint:fix`      | Corrige problemas de lint quando possível |
-| `npm run db:migrate`    | Aplica migrations do Prisma               |
-| `npm test`              | Executa a suíte de testes                 |
-| `npm run test:watch`    | Executa testes em modo watch              |
-| `npm run test:db-setup` | Aplica migrations no banco de testes      |
+| Script | Descrição |
+|---|---|
+| `npm run swagger` | Gera documentação Swagger |
+| `npm run dev` | Inicia a API em modo desenvolvimento |
+| `npm start` | Inicia a API em modo produção/local |
+| `npm run lint` | Executa ESLint |
+| `npm run lint:fix` | Corrige problemas de lint quando possível |
+| `npm run db:migrate` | Aplica migrations do Prisma |
+| `npm test` | Executa a suíte de testes |
+| `npm run test:watch` | Executa testes em modo watch |
+| `npm run test:db-setup` | Aplica migrations no banco de testes |
 
 ---
 
@@ -335,7 +363,8 @@ uptime-core-api/
 │   ├── architecture.md
 │   ├── api.md
 │   ├── development.md
-│   └── operations.md
+│   ├── operations.md
+│   └── services.md
 ├── prisma/
 │   ├── migrations/
 │   └── schema.prisma
@@ -380,6 +409,16 @@ npm test
 npm test -- --coverage
 ```
 
+A suíte inclui testes de integração para:
+
+- Autenticação.
+- Usuários.
+- Monitores.
+- Recuperação de senha.
+- Regras de incidentes e alertas.
+- Rotas administrativas.
+- Endpoints administrativos operacionais.
+
 Mais detalhes estão disponíveis em [Development](./docs/development.md).
 
 ---
@@ -388,14 +427,14 @@ Mais detalhes estão disponíveis em [Development](./docs/development.md).
 
 O projeto utiliza GitHub Actions para:
 
-* Instalação de dependências.
-* Geração do Prisma Client.
-* Análise estática com ESLint.
-* Provisionamento do banco de testes.
-* Execução de migrations do Prisma.
-* Testes automatizados com cobertura.
-* Análise no SonarCloud.
-* Deploy na Render.
+- Instalação de dependências.
+- Geração do Prisma Client.
+- Análise estática com ESLint.
+- Provisionamento do banco de testes.
+- Execução de migrations do Prisma.
+- Testes automatizados com cobertura.
+- Análise no SonarCloud.
+- Deploy na Render.
 
 Mais detalhes estão disponíveis em [Operations](./docs/operations.md).
 
@@ -403,60 +442,18 @@ Mais detalhes estão disponíveis em [Operations](./docs/operations.md).
 
 # 🗺️ **Roadmap**
 
-* [ ] Adicionar rotação de refresh token.
-* [ ] Adicionar rate limiting.
-* [ ] Adicionar Helmet.
-* [ ] Adicionar paginação nos endpoints de listagem.
-* [ ] Adicionar filtros por status de monitor.
-* [ ] Adicionar dashboard de histórico de uptime.
-* [ ] Adicionar logging estruturado.
-* [ ] Adicionar métricas Prometheus.
-* [ ] Adicionar notificações via webhook.
-* [ ] Adicionar notificações Slack ou Discord.
-* [ ] Adicionar suporte a multi-tenancy.
-
----
-
-# 🤝 **Contribuição**
-
-Contribuições são bem-vindas.
-
-## 1️⃣ Fazer fork do repositório
-
-## 2️⃣ Criar uma branch de feature
-
-```bash
-git checkout -b feature/nome-da-feature
-```
-
-## 3️⃣ Instalar dependências
-
-```bash
-npm install
-```
-
-## 4️⃣ Fazer suas alterações
-
-## 5️⃣ Executar lint e testes
-
-```bash
-npm run lint
-npm test
-```
-
-## 6️⃣ Commitar alterações
-
-```bash
-git commit -m "feat: add feature name"
-```
-
-## 7️⃣ Fazer push da branch
-
-```bash
-git push origin feature/nome-da-feature
-```
-
-## 8️⃣ Abrir Pull Request
+- [ ] Adicionar rotação de refresh token.
+- [ ] Adicionar rate limiting.
+- [ ] Adicionar Helmet.
+- [ ] Adicionar paginação nos endpoints de listagem.
+- [ ] Adicionar filtros por status de monitor.
+- [ ] Adicionar dashboard de histórico de uptime.
+- [ ] Adicionar logging estruturado.
+- [ ] Adicionar métricas Prometheus.
+- [ ] Adicionar notificações via webhook.
+- [ ] Adicionar notificações Slack ou Discord.
+- [ ] Adicionar auditoria detalhada para ações administrativas.
+- [ ] Adicionar suporte a multi-tenancy.
 
 ---
 
@@ -472,7 +469,7 @@ Consulte o arquivo [LICENSE](./LICENSE) para mais detalhes.
 
 **João Guilherme Santos Ribeiro**
 
-* GitHub: [https://github.com/joaogsribeiro](https://github.com/joaogsribeiro)
+- GitHub: [https://github.com/joaogsribeiro](https://github.com/joaogsribeiro)
 
 ---
 
